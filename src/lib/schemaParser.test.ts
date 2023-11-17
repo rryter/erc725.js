@@ -13,7 +13,7 @@
 */
 
 import assert from 'assert';
-import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
+import { ERC725JSONSchema, ERC725JSONSchemaKey } from '../types/ERC725JSONSchema';
 
 import { getSchema } from './schemaParser';
 
@@ -112,7 +112,7 @@ describe('schemaParser getSchema', () => {
     it('finds Known Mapping:<address> ', () => {
       const address = 'af3bf2ffb025098b79caddfbdd113b3681817744';
       const name = `MyCoolAddress:${address}`;
-      const key = `0x22496f48a493035f00000000${address}`;
+      const key = `0x22496f48a493035f00000000${address}` as ERC725JSONSchemaKey;
 
       const extraSchema: ERC725JSONSchema = {
         name,
@@ -132,7 +132,7 @@ describe('schemaParser getSchema', () => {
     it('finds MappingWithGrouping', () => {
       const address = 'af3bf2ffb025098b79caddfbdd113b3681817744';
       const name = `AddressPermissions:Permissions:${address}`;
-      const key = `0x4b80742de2bf82acb3630000${address}`;
+      const key = `0x4b80742de2bf82acb3630000${address}` as ERC725JSONSchemaKey;
       const schema = getSchema(key);
 
       assert.deepStrictEqual(schema, {

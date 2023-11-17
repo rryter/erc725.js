@@ -18,7 +18,7 @@
  */
 
 import assert from 'assert';
-import { keccak256 } from 'web3-utils';
+import { keccak256, toUtf8Bytes } from 'ethers';
 
 import {
   encodeDynamicKeyPart,
@@ -35,7 +35,7 @@ describe('encodeKeyName', () => {
   }[] = [
     {
       keyName: 'MyKeyName',
-      expectedKey: keccak256('MyKeyName'),
+      expectedKey: keccak256(toUtf8Bytes('MyKeyName')),
     },
     {
       keyName: 'LSP3IssuedAssets[]',

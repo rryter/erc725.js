@@ -20,7 +20,7 @@
  * @date 2020
  */
 
-import { hexToNumber, isAddress, leftPad, toHex } from 'web3-utils';
+import { isAddress, toBeHex } from 'ethers';
 import HttpProvider from 'web3-providers-http';
 
 import { ProviderWrapper } from './provider/providerWrapper';
@@ -46,6 +46,7 @@ import { ERC725Config, ERC725Options } from './types/Config';
 import { Permissions } from './types/Method';
 import {
   ERC725JSONSchema,
+  ERC725JSONSchemaKey,
   ERC725JSONSchemaKeyType,
   ERC725JSONSchemaValueContent,
   ERC725JSONSchemaValueType,
@@ -270,15 +271,15 @@ export class ERC725 {
    * @param providedSchemas If you provide your own ERC725JSONSchemas, the parser will also try to find a key match against these schemas.
    */
   getSchema(
-    keyOrKeys: string[],
+    keyOrKeys: ERC725JSONSchemaKey[],
     providedSchemas?: ERC725JSONSchema[],
   ): Record<string, ERC725JSONSchema | null>;
   getSchema(
-    keyOrKeys: string,
+    keyOrKeys: ERC725JSONSchemaKey,
     providedSchemas?: ERC725JSONSchema[],
   ): ERC725JSONSchema | null;
   getSchema(
-    keyOrKeys: string | string[],
+    keyOrKeys: ERC725JSONSchemaKey | ERC725JSONSchemaKey[],
     providedSchemas?: ERC725JSONSchema[],
   ): ERC725JSONSchema | null | Record<string, ERC725JSONSchema | null> {
     return getSchema(
@@ -434,11 +435,11 @@ export class ERC725 {
   static encodePermissions(permissions: Permissions): string {
     const result = Object.keys(permissions).reduce((previous, key) => {
       return permissions[key]
-        ? previous | Number(hexToNumber(LSP6_DEFAULT_PERMISSIONS[key]))
+        ? previous | parseInt(LSP6_DEFAULT_PERMISSIONS[key], 16)
         : previous;
     }, 0);
 
-    return leftPad(toHex(result), 64);
+    return toBeHex(result, 32);
   }
 
   /**
@@ -494,11 +495,12 @@ export class ERC725 {
       return result;
     }
 
-    const passedPermissionDecimal = Number(hexToNumber(permissionHex));
+    const passedPermissionDecimal = parseInt(permissionHex, 16);
 
     permissionsToTest.forEach((testPermission) => {
-      const decimalTestPermission = Number(
-        hexToNumber(LSP6_DEFAULT_PERMISSIONS[testPermission]),
+      const decimalTestPermission = parseInt(
+        LSP6_DEFAULT_PERMISSIONS[testPermission],
+        16,
       );
       const isPermissionIncluded =
         (passedPermissionDecimal & decimalTestPermission) ===

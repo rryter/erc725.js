@@ -20,15 +20,14 @@
  * @date 2023
  */
 
-import { isHexStrict } from 'web3-utils';
 import { COMPACT_BYTES_ARRAY_STRING } from '../constants/constants';
-
-import { DecodeDataInput, DecodeDataOutput } from '../types/decodeData';
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
+import { DecodeDataInput, DecodeDataOutput } from '../types/decodeData';
 import { isDynamicKeyName } from './encodeKeyName';
-import { valueContentEncodingMap, decodeValueType } from './encoder';
+import { decodeValueType, valueContentEncodingMap } from './encoder';
 import { getSchemaElement } from './getSchemaElement';
 import { decodeKeyValue, encodeArrayKey } from './utils';
+import { isHexString } from 'ethers';
 
 const tupleValueTypesRegex = /bytes(\d+)/;
 const valueContentsBytesRegex = /Bytes(\d+)/;
@@ -111,7 +110,7 @@ export const isValidTuple = (valueType: string, valueContent: string) => {
       );
     }
 
-    if (isHexStrict(valueContentParts[i])) {
+    if (isHexString(valueContentParts[i])) {
       // check if length of a hex literal in valueContent (e.g: 0x122334455)
       // is compatible with the valueType (e.g: bytes4)
       const hexLiteralLength = valueContentParts[i].length - 2;

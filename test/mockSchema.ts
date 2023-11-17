@@ -1,12 +1,14 @@
 // Mock schema for tests
 // make one schema that tests every single type
 
+import { hexlify, toBeHex, toUtf8Bytes, zeroPadValue } from 'ethers';
 import AbiCoder from 'web3-eth-abi';
-import { leftPad, utf8ToHex } from 'web3-utils';
-
+import { utf8ToHex } from 'web3-utils';
 import { ERC725JSONSchema } from '../src/types/ERC725JSONSchema';
 
 const abiCoder = AbiCoder;
+
+const arrayLength = (length: number) => zeroPadValue(toBeHex(length), 16);
 
 export const mockSchema: (ERC725JSONSchema & {
   returnRawData?: string | string[];
@@ -131,13 +133,17 @@ export const mockSchema: (ERC725JSONSchema & {
     // Testing data
     returnRawData: abiCoder.encodeParameter(
       'bytes',
-      utf8ToHex('# Testing markdown. \n Welcome to markdown **test**.'),
+      hexlify(
+        toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
+      ),
     ),
     returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('# Testing markdown. \n Welcome to markdown **test**.'),
+      hexlify(
+        toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
+      ),
     ]),
-    returnGraphData: utf8ToHex(
-      '# Testing markdown. \n Welcome to markdown **test**.',
+    returnGraphData: hexlify(
+      toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
     ),
     expectedResult: '# Testing markdown. \n Welcome to markdown **test**.',
   },
@@ -189,7 +195,7 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', leftPad(2, 32)), // array length
+      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
       abiCoder.encodeParameter(
         'bytes',
         '0xc444009d38d3046bb0cf81fa2cd295ce46a67c78',
@@ -200,7 +206,7 @@ export const mockSchema: (ERC725JSONSchema & {
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [leftPad(2, 32)]), // array length
+      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]), // array length
       abiCoder.encodeParameter('bytes[]', [
         '0xc444009d38d3046bb0cf81fa2cd295ce46a67c78',
       ]),
@@ -209,7 +215,7 @@ export const mockSchema: (ERC725JSONSchema & {
       ]),
     ],
     returnGraphData: [
-      leftPad(2, 32), // array length
+      arrayLength(2), // array length
       '0xc444009d38d3046bb0cf81fa2cd295ce46a67c78',
       '0x4febc3491230571f6e1829e46602e3b110215a2e',
     ],
@@ -228,7 +234,7 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', leftPad(2, 32)), // array length
+      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
       abiCoder.encodeParameter('bytes', '0x'),
       abiCoder.encodeParameter(
         'bytes',
@@ -236,14 +242,14 @@ export const mockSchema: (ERC725JSONSchema & {
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [leftPad(2, 32)]),
+      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]),
       abiCoder.encodeParameter('bytes[]', ['0x']),
       abiCoder.encodeParameter('bytes[]', [
         '0x4febc3491230571f6e1829e46602e3b110215a2e',
       ]),
     ],
     returnGraphData: [
-      leftPad(2, 32), // array length
+      arrayLength(2), // array length
       '0x',
       '0x4febc3491230571f6e1829e46602e3b110215a2e',
     ],
@@ -260,7 +266,7 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', leftPad(2, 32)), // array length
+      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
       abiCoder.encodeParameter(
         'bytes',
         '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
@@ -271,7 +277,7 @@ export const mockSchema: (ERC725JSONSchema & {
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [leftPad(2, 32)]),
+      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]),
       abiCoder.encodeParameter('bytes[]', [
         '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
       ]),
@@ -280,7 +286,7 @@ export const mockSchema: (ERC725JSONSchema & {
       ]),
     ],
     returnGraphData: [
-      leftPad(2, 32), // array length
+      arrayLength(2), // array length
       '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
       '0x6f357c6a81bd0b7ed5ac354abbf24619ce16933f00a4bdfa8fcaf3791d25f69b497abf88697066733a2f2f516d6245724b6833466a7378787878787878787878787878787878787878787878787878787639414a4a765a6264',
     ],

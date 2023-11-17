@@ -17,7 +17,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 
-import { keccak256, utf8ToHex } from 'web3-utils';
+import { hexlify, keccak256, toUtf8Bytes } from 'ethers';
 import {
   ERC725JSONSchema,
   ERC725JSONSchemaKeyType,
@@ -274,13 +274,13 @@ describe('utils', () => {
         valueContent: 'String',
         valueType: 'string',
         decodedValue: 'Great-string',
-        encodedValue: utf8ToHex('Great-string'),
+        encodedValue: hexlify(toUtf8Bytes('Great-string')),
       },
       {
         valueContent: 'Markdown',
         valueType: 'string',
         decodedValue: '# Title',
-        encodedValue: utf8ToHex('# Title'),
+        encodedValue: hexlify(toUtf8Bytes('# Title')),
       },
       {
         valueContent: 'URL',
@@ -662,7 +662,7 @@ describe('utils', () => {
 
   describe('isDataAuthentic', () => {
     it('returns true if data is authentic', () => {
-      const data = 'h3ll0HowAreYou?';
+      const data = toUtf8Bytes('h3ll0HowAreYou?');
       const expectedHash = keccak256(data);
 
       const isAuthentic = isDataAuthentic(data, {
@@ -673,7 +673,7 @@ describe('utils', () => {
       assert.ok(isAuthentic);
     });
     it('returns false if data is not authentic', () => {
-      const data = 'h3ll0HowAreYou?';
+      const data = toUtf8Bytes('h3ll0HowAreYou?');
       const expectedHash = 'wrongHash';
 
       const isAuthentic = isDataAuthentic(data, {

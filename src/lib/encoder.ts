@@ -32,7 +32,6 @@ import {
   hexToUtf8,
   isAddress,
   isHex,
-  keccak256,
   numberToHex,
   padLeft,
   toChecksumAddress,
@@ -43,7 +42,7 @@ import {
   toHex,
   toBN,
 } from 'web3-utils';
-
+import { toUtf8Bytes, keccak256, dataLength } from 'ethers';
 import { JSONURLDataToEncode, URLDataWithHash, Verification } from '../types';
 import { AssetURLEncode } from '../types/encodeData';
 
@@ -51,7 +50,7 @@ import {
   SUPPORTED_VERIFICATION_METHOD_STRINGS,
   UNKNOWN_VERIFICATION_METHOD,
 } from '../constants/constants';
-import { getVerificationMethod, hashData, countNumberOfBytes } from './utils';
+import { getVerificationMethod, hashData } from './utils';
 
 const abiCoder = AbiCoder;
 
@@ -68,7 +67,7 @@ const encodeDataSourceWithHash = (
   );
   return (
     (verificationMethod
-      ? keccak256(verificationMethod.name).slice(0, 10)
+      ? keccak256(toUtf8Bytes(verificationMethod.name)).slice(0, 10)
       : padLeft(0, 8)) +
     stripHexPrefix(verification ? verification.data : padLeft(0, 64)) +
     stripHexPrefix(utf8ToHex(dataSource))
@@ -109,7 +108,7 @@ const encodeToBytesN = (
   }
 
   const numberOfBytesInType = parseInt(bytesN.split('bytes')[1], 10);
-  const numberOfBytesInValue = countNumberOfBytes(valueToEncode);
+  const numberOfBytesInValue = dataLength(valueToEncode);
 
   if (numberOfBytesInValue > numberOfBytesInType) {
     throw new Error(
@@ -422,7 +421,7 @@ const valueTypeEncodingMap = {
         throw new Error(`Can't convert ${value} to uint256, value is not hex.`);
       }
 
-      const numberOfBytes = countNumberOfBytes(value);
+      const numberOfBytes = dataLength(value);
 
       if (numberOfBytes > 32) {
         throw new Error(

@@ -17,9 +17,9 @@
  * @date 2021
  */
 
-import { isHex, isHexStrict } from 'web3-utils';
-import { DynamicKeyParts } from '../types/dynamicKeys';
+import { isHexString } from 'ethers';
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
+import { DynamicKeyParts } from '../types/dynamicKeys';
 import {
   encodeKeyName,
   generateDynamicKeyName,
@@ -88,10 +88,10 @@ export function getSchemaElement(
     );
   }
 
-  if (isHex(namedOrHashedKey)) {
-    keyHash = isHexStrict(namedOrHashedKey)
-      ? namedOrHashedKey
-      : `0x${namedOrHashedKey}`;
+  if (isHexString(namedOrHashedKey)) {
+    keyHash = namedOrHashedKey;
+  } else if (namedOrHashedKey.length === 64) {
+    keyHash = '0x' + namedOrHashedKey;
   } else {
     keyHash = encodeKeyName(namedOrHashedKey);
   }

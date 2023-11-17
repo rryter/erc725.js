@@ -21,6 +21,7 @@ import allSchemas from '../schemas';
 
 import {
   ERC725JSONSchema,
+  ERC725JSONSchemaKey,
   ERC725JSONSchemaKeyType,
 } from '../types/ERC725JSONSchema';
 
@@ -45,7 +46,7 @@ const findSingletonSchemaForKey = (
 };
 
 const findArraySchemaForKey = (
-  key: string,
+  key: ERC725JSONSchemaKey,
   schemas: ERC725JSONSchema[],
 ): ERC725JSONSchema | null => {
   // Should detect:
@@ -83,7 +84,7 @@ const findArraySchemaForKey = (
 };
 
 const findMappingSchemaForKey = (
-  key: string,
+  key: ERC725JSONSchemaKey,
   schemas: ERC725JSONSchema[],
 ): ERC725JSONSchema | null => {
   // Should detect:
@@ -114,7 +115,7 @@ const findMappingSchemaForKey = (
 };
 
 const findMappingWithGroupingSchemaForKey = (
-  key: string,
+  key: ERC725JSONSchemaKey,
   schemas: ERC725JSONSchema[],
 ): ERC725JSONSchema | null => {
   const keySchema =
@@ -139,7 +140,7 @@ const findMappingWithGroupingSchemaForKey = (
 };
 
 function schemaParser(
-  key: string,
+  key: ERC725JSONSchemaKey,
   schemas: ERC725JSONSchema[],
 ): ERC725JSONSchema | null {
   const schemasByKeyType = getSchemasByKeyType(schemas);
@@ -173,7 +174,7 @@ function schemaParser(
 }
 
 export function getSchema(
-  keyOrKeys: string | string[],
+  keyOrKeys: ERC725JSONSchemaKey | ERC725JSONSchemaKey[],
   providedSchemas?: ERC725JSONSchema[],
 ): ERC725JSONSchema | null | Record<string, ERC725JSONSchema | null> {
   let fullSchema: ERC725JSONSchema[] = allSchemas;

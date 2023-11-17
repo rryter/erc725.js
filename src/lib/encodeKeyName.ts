@@ -17,17 +17,11 @@
  * @date 2022
  */
 
-import {
-  isAddress,
-  isHex,
-  keccak256,
-  leftPad,
-  numberToHex,
-  padLeft,
-} from 'web3-utils';
-
+import { isAddress, isHex, leftPad, numberToHex, padLeft } from 'web3-utils';
+import { keccak256, toUtf8Bytes } from 'ethers';
 import { guessKeyTypeFromKeyName } from './utils';
 import { DynamicKeyParts } from '../types/dynamicKeys';
+import { ERC725JSONSchemaKey } from '../types/ERC725JSONSchema';
 
 // https://github.com/lukso-network/LIPs/blob/main/LSPs/LSP-2-ERC725YJSONSchema.md#mapping
 
@@ -66,7 +60,7 @@ export const encodeDynamicKeyPart = (
 
   switch (baseType) {
     case 'string':
-      return keccak256(value).slice(2, 2 + bytes * 2);
+      return keccak256(toUtf8Bytes(value)).slice(2, 2 + bytes * 2);
     case 'bool': {
       if (value !== 'true' && value !== 'false') {
         throw new Error(
@@ -169,13 +163,13 @@ const encodeDynamicMapping = (name: string, dynamicKeyParts: string[]) => {
 
   const keyNameSplit = name.split(':'); // LSP5ReceivedAssetsMap:<address>
 
-  const encodedKey = keccak256(keyNameSplit[0]).slice(0, 22);
+  const encodedKey = keccak256(toUtf8Bytes(keyNameSplit[0])).slice(0, 22);
 
   return `${encodedKey}0000${encodeDynamicKeyPart(
     keyNameSplit[1],
     dynamicKeyParts[0],
     20,
-  )}`;
+  )}` as ERC725JSONSchemaKey;
 };
 
 /**
@@ -207,13 +201,13 @@ const encodeDynamicMappingWithGrouping = (
     );
   }
 
-  const firstPart = keccak256(keyNameSplit[0]).slice(0, 14);
+  const firstPart = keccak256(toUtf8Bytes(keyNameSplit[0])).slice(0, 14);
 
   let secondPart = '';
   if (isDynamicKeyName(keyNameSplit[1])) {
     secondPart = encodeDynamicKeyPart(keyNameSplit[1], dynamicKeyParts[0], 4);
   } else {
-    secondPart = keccak256(keyNameSplit[1]).slice(2, 2 + 4 * 2);
+    secondPart = keccak256(toUtf8Bytes(keyNameSplit[1])).slice(2, 2 + 4 * 2);
   }
 
   let lastPart = '';
@@ -224,16 +218,16 @@ const encodeDynamicMappingWithGrouping = (
       20,
     );
   } else {
-    lastPart = keccak256(keyNameSplit[2]).slice(2, 2 + 20 * 2);
+    lastPart = keccak256(toUtf8Bytes(keyNameSplit[2])).slice(2, 2 + 20 * 2);
   }
 
-  return `${firstPart}${secondPart}0000${lastPart}`;
+  return `${firstPart}${secondPart}0000${lastPart}` as ERC725JSONSchemaKey;
 };
 
 function encodeDynamicKeyName(
   name: string,
   dynamicKeyParts?: DynamicKeyParts,
-): string {
+): ERC725JSONSchemaKey {
   if (!dynamicKeyParts) {
     throw new Error(
       `Can't encode dynamic key name: ${name} without dynamicKeyParts`,
@@ -264,7 +258,7 @@ function encodeDynamicKeyName(
  *
  * @return the name of the key encoded as per specifications.
  */
-export function encodeKeyName(name: string, dynamicKeyParts?: DynamicKeyParts) {
+export function encodeKeyName(name: string, dynamicKeyParts?: DynamicKeyParts): ERC725JSONSchemaKey {
   if (isDynamicKeyName(name)) {
     return encodeDynamicKeyName(name, dynamicKeyParts);
   }
@@ -295,9 +289,9 @@ export function encodeKeyName(name: string, dynamicKeyParts?: DynamicKeyParts) {
     }
     case 'Array': // Warning: this can not correctly encode subsequent keys of array, only the initial Array key will work
     case 'Singleton':
-      return keccak256(name);
+      return keccak256(toUtf8Bytes(name)) as ERC725JSONSchemaKey;
     default:
-      return keccak256(name);
+      return keccak256(toUtf8Bytes(name)) as ERC725JSONSchemaKey;
   }
 }
 

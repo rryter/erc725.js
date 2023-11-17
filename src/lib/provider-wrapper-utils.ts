@@ -13,15 +13,12 @@
 */
 
 import * as abi from 'web3-eth-abi';
-import { numberToHex } from 'web3-utils';
-
+import { METHODS } from '../constants/constants';
 import {
   JsonRpc,
   JsonRpcEthereumProviderParamsWithLatest,
 } from '../types/JsonRpc';
 import { Method } from '../types/Method';
-
-import { METHODS } from '../constants/constants';
 
 let idCount = 0;
 const web3abiDecoder = abi.default;
@@ -61,7 +58,7 @@ const constructJSONRPCParams = (
     {
       to: address,
       value: METHODS[method].value,
-      gas: numberToHex(gasInfo),
+      gas: '0x' + gasInfo.toString(16),
       data,
     },
     'latest',

@@ -18,10 +18,10 @@
  * @date 2022
  */
 
-import { isHex, padLeft } from 'web3-utils';
-import { decodeValueType } from './encoder';
+import { isHexString, toBeHex } from 'ethers';
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
 import { DynamicKeyPart } from '../types/dynamicKeys';
+import { decodeValueType } from './encoder';
 
 function isDynamicKeyPart(keyPartName: string): boolean {
   return (
@@ -57,7 +57,8 @@ function decodeKeyPart(
     decodedKey = encodedKeyPart.slice(sliceFrom);
   } else if (type === 'address') {
     // this is required if the 2nd word is an address in a MappingWithGrouping
-    const leftPaddedAddress = padLeft('0x' + encodedKeyPart, 40);
+
+    const leftPaddedAddress = toBeHex('0x' + encodedKeyPart, 20);
 
     decodedKey = decodeValueType(type, leftPaddedAddress);
   } else {
@@ -85,7 +86,7 @@ export function decodeMappingKey(
     throw new Error(
       `Invalid encodedKey length, key must be 32 bytes long hexadecimal value`,
     );
-  if (!isHex(hashedKey.slice(2)))
+  if (!isHexString(hashedKey))
     throw new Error(`Invalid encodedKey, must be a hexadecimal value`);
 
   let keyParts: string[];

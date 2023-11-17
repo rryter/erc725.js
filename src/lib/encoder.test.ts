@@ -15,8 +15,8 @@
 /* eslint-disable no-unused-expressions */
 
 import { expect, assert } from 'chai';
-
-import { keccak256, utf8ToHex, stripHexPrefix, toBN, toHex } from 'web3-utils';
+import { keccak256, toUtf8Bytes } from 'ethers';
+import { utf8ToHex, stripHexPrefix, toBN, toHex } from 'web3-utils';
 import {
   valueContentEncodingMap,
   encodeValueType,
@@ -923,7 +923,7 @@ describe('encoder', () => {
         SUPPORTED_VERIFICATION_METHOD_HASHES.HASH_KECCAK256_UTF8;
       const hexUrl = utf8ToHex(dataToEncode.url).substring(2);
       const jsonVerificationData = keccak256(
-        JSON.stringify(dataToEncode.json),
+        toUtf8Bytes(JSON.stringify(dataToEncode.json)),
       ).substring(2);
       assert.deepStrictEqual(
         encodedValue,

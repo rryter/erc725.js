@@ -13,8 +13,7 @@
 */
 
 /* eslint-disable @typescript-eslint/ban-types */
-import { numberToHex, keccak256 } from 'web3-utils';
-
+import { keccak256, toUtf8Bytes } from 'ethers';
 import { MethodData, Encoding, Method } from '../types/Method';
 
 // https://github.com/ERC725Alliance/ERC725/blob/develop/docs/ERC-725.md#specification
@@ -58,36 +57,36 @@ export const METHODS: Record<Method, MethodData> = {
   [Method.GET_DATA_LEGACY]: {
     // Legacy version of ERC725Y - before v0.3.0
     sig: '0x54f6127f',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.BYTES,
   },
   [Method.GET_DATA]: {
     // https://github.com/ERC725Alliance/ERC725/blob/v4.0.0/docs/ERC-725.md#erc725y
     sig: '0x4e3e6e9c',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.BYTES_ARRAY,
   },
   [Method.GET_DATA_BATCH]: {
     // https://github.com/ERC725Alliance/ERC725/blob/v5.1.0/docs/ERC-725.md#erc725y
     sig: '0xdedff9c6',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.BYTES_ARRAY,
   },
   [Method.OWNER]: {
     sig: '0x8da5cb5b',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.ADDRESS,
   },
   [Method.SUPPORTS_INTERFACE]: {
     // https://eips.ethereum.org/EIPS/eip-165
     sig: '0x01ffc9a7',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.BOOL,
   },
   [Method.IS_VALID_SIGNATURE]: {
     // https://eips.ethereum.org/EIPS/eip-1271
     sig: '0x1626ba7e',
-    value: numberToHex(0),
+    value: '0x0',
     returnEncoding: Encoding.BYTES4,
   },
 };
@@ -113,7 +112,7 @@ export const SUPPORTED_VERIFICATION_METHODS_LIST = Object.values(
 );
 
 function keccak256Utf8(data) {
-  return keccak256(JSON.stringify(data));
+  return keccak256(toUtf8Bytes(JSON.stringify(data)));
 }
 
 const KECCAK256_UTF8 = {

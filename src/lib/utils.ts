@@ -19,13 +19,7 @@
  * @date 2020
  */
 
-import {
-  checkAddressChecksum,
-  isAddress,
-  numberToHex,
-  padLeft,
-  stripHexPrefix,
-} from 'web3-utils';
+import { getAddress, isAddress, toBeHex } from 'ethers';
 import { arrToBufArr } from 'ethereumjs-util';
 
 import {
@@ -142,7 +136,7 @@ export function encodeKeyValue(
  * @return The raw bytes key for the array element
  */
 export function encodeArrayKey(key: string, index: number) {
-  return key.slice(0, 34) + padLeft(numberToHex(index), 32).replace('0x', '');
+  return key.slice(0, 34) + toBeHex(index, 16).replace('0x', '');
 }
 
 /**
@@ -218,7 +212,11 @@ export const encodeTupleKeyValue = (
           );
         }
 
-        return padLeft(encodedKeyValue, numberOfBytes * 2).replace('0x', '');
+        if (Number.isNaN(numberOfBytes)) {
+          return encodedKeyValue.replace('0x', '');
+        }
+
+        return toBeHex(encodedKeyValue, numberOfBytes || 1).replace('0x', '');
       })
       .join('');
 
@@ -395,8 +393,15 @@ export function decodeKeyValue(
     value = decodeValueType(valueType, value);
   }
 
+  let addressWithValidChecksum;
+  try {
+    addressWithValidChecksum = getAddress(value);
+  } catch (error) {
+    // TODO: should we inform the dev?
+    addressWithValidChecksum = false;
+  }
   // As per exception above, if address and sameEncoding, then the address still needs to be handled
-  if (sameEncoding && isAddress(value) && !checkAddressChecksum(value)) {
+  if (sameEncoding && isAddress(value) && addressWithValidChecksum) {
     sameEncoding = !sameEncoding;
   }
 
@@ -576,8 +581,4 @@ export function patchIPFSUrlsIfApplicable(
   }
 
   return receivedData;
-}
-
-export function countNumberOfBytes(data: string) {
-  return stripHexPrefix(data).length / 2;
 }

@@ -17,7 +17,7 @@
  * @date 2022
  */
 
-import { keccak256 } from 'web3-utils';
+import { keccak256, toUtf8Bytes } from 'ethers';
 import { ProviderWrapper } from '../provider/providerWrapper';
 
 const MAGIC_VALUE = '0x1626ba7e';
@@ -45,7 +45,9 @@ export const isValidSignature = async (
   const hash = validateHash(messageOrHash)
     ? messageOrHash
     : keccak256(
-        `\x19Ethereum Signed Message:\n${messageOrHash.length}${messageOrHash}`,
+        toUtf8Bytes(
+          `\x19Ethereum Signed Message:\n${messageOrHash.length}${messageOrHash}`,
+        ),
       );
 
   if (signature.length !== 132) {
