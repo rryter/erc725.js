@@ -12,7 +12,7 @@
     along with @erc725/erc725.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as abi from 'web3-eth-abi';
+import { AbiCoder } from 'ethers';
 import { METHODS } from '../constants/constants';
 import {
   JsonRpc,
@@ -21,17 +21,17 @@ import {
 import { Method } from '../types/Method';
 
 let idCount = 0;
-const web3abiDecoder = abi.default;
+const abiCoder = new AbiCoder();
 
 export function decodeResult(method: Method, hexString: string) {
   if (hexString === '0x') {
     return null;
   }
 
-  const decodedData = web3abiDecoder.decodeParameter(
-    METHODS[method].returnEncoding,
+  const decodedData = abiCoder.decode(
+    [METHODS[method].returnEncoding],
     hexString,
-  );
+  )[0];
 
   if (
     Array.isArray(decodedData) &&

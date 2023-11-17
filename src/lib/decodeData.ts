@@ -20,6 +20,7 @@
  * @date 2023
  */
 
+import { isHexString } from 'ethers';
 import { COMPACT_BYTES_ARRAY_STRING } from '../constants/constants';
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
 import { DecodeDataInput, DecodeDataOutput } from '../types/decodeData';
@@ -27,7 +28,6 @@ import { isDynamicKeyName } from './encodeKeyName';
 import { decodeValueType, valueContentEncodingMap } from './encoder';
 import { getSchemaElement } from './getSchemaElement';
 import { decodeKeyValue, encodeArrayKey } from './utils';
-import { isHexString } from 'ethers';
 
 const tupleValueTypesRegex = /bytes(\d+)/;
 const valueContentsBytesRegex = /Bytes(\d+)/;

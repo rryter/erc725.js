@@ -14,9 +14,7 @@
 
 /* eslint-disable no-unused-expressions */
 
-import { expect, assert } from 'chai';
-import { keccak256, toUtf8Bytes } from 'ethers';
-import { utf8ToHex, stripHexPrefix, toBN, toHex } from 'web3-utils';
+import { keccak256, toBeHex, toUtf8Bytes } from 'ethers';
 import {
   valueContentEncodingMap,
   encodeValueType,
@@ -29,6 +27,7 @@ import {
   SUPPORTED_VERIFICATION_METHOD_STRINGS,
 } from '../constants/constants';
 import { JSONURLDataToEncode, URLDataWithHash } from '../types';
+import { stripHexPrefix, utf8ToHex } from './utils';
 
 describe('encoder', () => {
   describe('valueType', () => {
@@ -63,11 +62,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -93,11 +91,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -122,9 +119,9 @@ describe('encoder', () => {
 
       errorEncodingTestCases.forEach((testCase) => {
         it(`should throw when trying to encode ${testCase.input} as ${testCase.valueType}`, async () => {
-          assert.throws(() =>
+          expect(() =>
             encodeValueType(testCase.valueType, testCase.input),
-          );
+          ).toThrow();
         });
       });
 
@@ -152,11 +149,10 @@ describe('encoder', () => {
             testCase.input,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -183,11 +179,10 @@ describe('encoder', () => {
             testCase.input,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -217,11 +212,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -240,8 +234,8 @@ describe('encoder', () => {
         {
           valueType: 'bytes32',
           // over the max uint256 allowed, does not fit in 32 bytes
-          input: toHex(
-            toBN(
+          input: toBeHex(
+            BigInt(
               '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' +
                 1,
             ),
@@ -251,9 +245,9 @@ describe('encoder', () => {
 
       errorEncodingTestCases.forEach((testCase) => {
         it(`should throw when trying to encode ${testCase.input} as ${testCase.valueType}`, async () => {
-          assert.throws(() =>
+          expect(() =>
             encodeValueType(testCase.valueType, testCase.input),
-          );
+          ).toThrow();
         });
       });
 
@@ -283,11 +277,10 @@ describe('encoder', () => {
             testCase.input,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -318,11 +311,10 @@ describe('encoder', () => {
             testCase.input,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -343,11 +335,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -369,11 +360,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -394,11 +384,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -414,9 +403,8 @@ describe('encoder', () => {
           testCase.decodedValue,
         );
 
-        assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-        assert.deepStrictEqual(
-          decodeValueType(testCase.valueType, encodedValue),
+        expect(encodedValue).toStrictEqual(testCase.encodedValue);
+        expect(decodeValueType(testCase.valueType, encodedValue)).toStrictEqual(
           `${testCase.decodedValue}`,
         );
       });
@@ -439,11 +427,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -460,9 +447,9 @@ describe('encoder', () => {
 
       errorEncodingTestCases.forEach((testCase) => {
         it(`should throw when trying to encode ${testCase.input} as ${testCase.valueType}`, async () => {
-          assert.throws(() =>
+          expect(() =>
             encodeValueType(testCase.valueType, testCase.input),
-          );
+          ).toThrow();
         });
       });
     });
@@ -495,11 +482,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -583,12 +569,10 @@ describe('encoder', () => {
             testCase.valueType,
             testCase.decodedValue,
           );
-
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
     });
@@ -606,31 +590,31 @@ describe('encoder', () => {
 
       validTestCases.forEach((testCase) => {
         it('should throw', async () => {
-          assert.throws(() =>
+          expect(() =>
             encodeValueType(testCase.valueType, testCase.decodedValue),
-          );
+          ).toThrow();
         });
       });
     });
 
     describe('when encoding/decoding a value that is not a number as a `uint128`', () => {
       it('throws when trying to encode a string as `uint128`', () => {
-        assert.throws(() => encodeValueType('uint128', 'helloWorld'));
+        expect(() => encodeValueType('uint128', 'helloWorld')).toThrow();
       });
 
       it('throws when trying to encode a bytes17 as `uint128`', () => {
-        assert.throws(() =>
+        expect(() =>
           encodeValueType('uint128', '340282366920938463463374607431768211456'),
-        );
-        assert.throws(() =>
+        ).toThrow();
+        expect(() =>
           encodeValueType('uint128', '0x0100000000000000000000000000000000'),
-        );
+        ).toThrow();
       });
 
       it('throws when trying to decode a bytes17 as `uint128`', () => {
         expect(() =>
           decodeValueType('uint128', '0x000000000000000000000000000000ffff'),
-        ).to.throw(
+        ).toThrow(
           "Can't convert hex value 0x000000000000000000000000000000ffff to uint128. Too many bytes. 17 > 16",
         );
       });
@@ -690,11 +674,10 @@ describe('encoder', () => {
             testCase.decodedValue,
           );
 
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-          assert.deepStrictEqual(
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
+          expect(
             decodeValueType(testCase.valueType, encodedValue),
-            testCase.decodedValue,
-          );
+          ).toStrictEqual(testCase.decodedValue);
         });
       });
 
@@ -710,7 +693,7 @@ describe('encoder', () => {
             testCase.valueType,
             testCase.decodedValue,
           );
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
         });
 
         it("should encode '' (empty strings) elements as `0x0000`", async () => {
@@ -724,7 +707,7 @@ describe('encoder', () => {
             testCase.valueType,
             testCase.decodedValue,
           );
-          assert.deepStrictEqual(encodedValue, testCase.encodedValue);
+          expect(encodedValue).toStrictEqual(testCase.encodedValue);
         });
 
         it('should throw when trying to encode a array that contains non hex string as `bytes[CompactBytesArray]`', async () => {
@@ -734,7 +717,7 @@ describe('encoder', () => {
               'another random strings',
               '0xaabbccdd',
             ]);
-          }).to.throw(
+          }).toThrow(
             "Couldn't encode bytes[CompactBytesArray], value at index 0 is not hex",
           );
         });
@@ -744,7 +727,7 @@ describe('encoder', () => {
             encodeValueType('bytes[CompactBytesArray]', [
               '0x' + 'ab'.repeat(66_0000),
             ]);
-          }).to.throw(
+          }).toThrow(
             "Couldn't encode bytes[CompactBytesArray], value at index 0 exceeds 65_535 bytes",
           );
         });
@@ -754,7 +737,7 @@ describe('encoder', () => {
         it('should throw if trying to encode a value that exceeds the maximal lenght of bytes for this type', async () => {
           expect(() => {
             encodeValueType('uint8[CompactBytesArray]', [15, 178, 266]);
-          }).to.throw('Hex uint8 value at index 2 does not fit in 1 bytes');
+          }).toThrow('Hex uint8 value at index 2 does not fit in 1 bytes');
         });
 
         it('should throw if trying to decode a value that exceeds the maximal lenght of bytes for this type', async () => {
@@ -763,7 +746,7 @@ describe('encoder', () => {
               'uint8[CompactBytesArray]',
               '0x00010100012b00014900020100',
             );
-          }).to.throw('Hex uint8 value at index 3 does not fit in 1 bytes');
+          }).toThrow('Hex uint8 value at index 3 does not fit in 1 bytes');
         });
       });
 
@@ -776,7 +759,7 @@ describe('encoder', () => {
               '0x72062616',
               '0xab7f11e3aabbcc',
             ]);
-          }).to.throw('Hex bytes4 value at index 3 does not fit in 4 bytes');
+          }).toThrow('Hex bytes4 value at index 3 does not fit in 4 bytes');
         });
 
         it('should throw if trying to decode a value that exceeds the maximal lenght of bytes for this type', async () => {
@@ -785,7 +768,7 @@ describe('encoder', () => {
               'bytes4[CompactBytesArray]',
               '0x0004e65207260004272696e60004720626160007ab7f11e3aabbcc',
             );
-          }).to.throw('Hex bytes4 value at index 3 does not fit in 4 bytes');
+          }).toThrow('Hex bytes4 value at index 3 does not fit in 4 bytes');
         });
       });
 
@@ -801,24 +784,24 @@ describe('encoder', () => {
             testCase.valueType,
             testCase.encodedValue,
           );
-          assert.deepStrictEqual(decodedValue, testCase.decodedValue);
+          expect(decodedValue).toStrictEqual(testCase.decodedValue);
         });
 
         it('should throw when trying to decode a `bytes[CompactBytesArray]` with an invalid length byte', async () => {
           expect(() => {
             decodeValueType('bytes[CompactBytesArray]', '0x0005cafe');
-          }).to.throw("Couldn't decode bytes[CompactBytesArray]");
+          }).toThrow("Couldn't decode bytes[CompactBytesArray]");
         });
       });
     });
 
     it('should throw when valueType is unknown', () => {
-      assert.throws(() => {
+      expect(() => {
         encodeValueType('????', 'hi');
-      });
-      assert.throws(() => {
+      }).toThrow();
+      expect(() => {
         decodeValueType('whatIsthisType', 'hi');
-      });
+      }).toThrow();
     });
   });
 
@@ -897,13 +880,12 @@ describe('encoder', () => {
 
         encodeValueContent(testCase.valueContent, testCase.decodedValue);
 
-        assert.deepStrictEqual(encodedValue, testCase.encodedValue);
-        assert.deepStrictEqual(
+        expect(encodedValue).toStrictEqual(testCase.encodedValue);
+        expect(
           encodedValue !== false
             ? decodeValueContent(testCase.valueContent, encodedValue)
             : false,
-          testCase.decodedValue,
-        );
+        ).toStrictEqual(testCase.decodedValue);
       });
     });
 
@@ -925,8 +907,7 @@ describe('encoder', () => {
       const jsonVerificationData = keccak256(
         toUtf8Bytes(JSON.stringify(dataToEncode.json)),
       ).substring(2);
-      assert.deepStrictEqual(
-        encodedValue,
+      expect(encodedValue).toStrictEqual(
         verificationMethod + jsonVerificationData + hexUrl,
       );
 
@@ -938,43 +919,42 @@ describe('encoder', () => {
         url: dataToEncode.url,
       };
 
-      assert.deepStrictEqual(
+      expect(
         encodedValue !== false
           ? decodeValueContent('JSONURL', encodedValue)
           : false,
-        expectedDecodedValue,
-      );
+      ).toStrictEqual(expectedDecodedValue);
     });
 
     it('should throw when encodeValueContent value is a string and valueContent is JSONURL or ASSETURL', () => {
       expect(() => {
         encodeValueContent('AssetURL', 'imnotanobject!');
-      }).to.throw;
+      }).toThrow;
       expect(() => {
         encodeValueContent('JSONURL', 'imnotanobject!');
-      }).to.throw;
+      }).toThrow;
     });
 
     it('should throw when valueContent is unknown', () => {
-      assert.throws(() => {
+      expect(() => {
         encodeValueContent('wrongContent', 'hi');
-      });
-      assert.throws(() => {
+      }).toThrow();
+      expect(() => {
         decodeValueContent('wrongContent', 'hi');
-      });
+      }).toThrow();
     });
 
     it('should return the value if the valueContent == value', () => {
       const value =
         '0x027547537d35728a741470df1ccf65de10b454ca0def7c5c20b257b7b8d16168';
 
-      assert.deepStrictEqual(encodeValueContent(value, value), value);
-      assert.deepStrictEqual(decodeValueContent(value, value), value);
+      expect(encodeValueContent(value, value)).toStrictEqual(value);
+      expect(decodeValueContent(value, value)).toStrictEqual(value);
     });
 
     describe('JSONURL', () => {
       it('throws when the verification method of JSON of JSONURL to encode is not keccak256(utf8)', () => {
-        assert.throws(() => {
+        expect(() => {
           valueContentEncodingMap('JSONURL').encode({
             // @ts-ignore to still run the test (incase someone is using the library in a non TS environment)
             verification: {
@@ -983,11 +963,13 @@ describe('encoder', () => {
             },
             url: 'https://file-desination.com/file-name',
           });
-        }, `Chosen verification method 'whatever' is not supported. Supported verification methods: keccak256(utf8),keccak256(bytes)`);
+        }).toThrow(
+          `Chosen verification method 'whatever' is not supported. Supported verification methods: keccak256(utf8),keccak256(bytes)`,
+        );
       });
 
       it('throws when JSONURL encode a JSON without json or verificationData key', () => {
-        assert.throws(() => {
+        expect(() => {
           valueContentEncodingMap('JSONURL').encode({
             // @ts-ignore to still run the test (incase someone is using the library in a non TS environment)
             verification: {
@@ -995,7 +977,9 @@ describe('encoder', () => {
             },
             url: 'https://file-desination.com/file-name',
           });
-        }, 'You have to provide either the verification.data or the json via the respective properties');
+        }).toThrow(
+          'You have to provide either the verification.data or the json via the respective properties',
+        );
       });
     });
   });

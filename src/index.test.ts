@@ -16,13 +16,14 @@
  * @author Robert McLeod <@robertdavid010>, Fabian Vogelsteller <fabian@lukso.network>
  * @date 2020
  */
+/* eslint-disable no-loop-func */
 
 // Tests for the @erc725/erc725.js package
-import { assert } from 'chai';
 
 import * as sinon from 'sinon';
 import Web3 from 'web3';
 
+import { toBeHex } from 'ethers';
 import ERC725 from '.';
 import { EthereumProvider, HttpProvider } from '../test/mockProviders';
 import { mockSchema } from '../test/mockSchema';
@@ -41,7 +42,6 @@ import { ERC725JSONSchema } from './types/ERC725JSONSchema';
 
 import 'isomorphic-fetch';
 
-import { toBeHex } from 'ethers';
 import {
   ERC725Y_INTERFACE_IDS,
   SUPPORTED_VERIFICATION_METHOD_STRINGS,
@@ -53,19 +53,17 @@ const address = '0x0c03fba782b07bcf810deb3b7f0595024a444f4e';
 
 describe('Running @erc725/erc725.js tests...', () => {
   it('should throw when no arguments are supplied', () => {
-    assert.throws(() => {
-      // @ts-ignore
-      // eslint-disable-next-line no-new
-      new ERC725();
-    }, 'Missing schema.');
+    // @ts-ignore
+    // eslint-disable-next-line no-new
+    expect(() => new ERC725()).toThrowError('Missing schema.');
   });
 
   it('should throw when incorrect or unsupported provider is provided', () => {
-    assert.throws(() => {
-      // @ts-ignore
-      // eslint-disable-next-line no-new
-      new ERC725(mockSchema, address, { test: false });
-    }, /Incorrect or unsupported provider/);
+    // @ts-ignore
+    // eslint-disable-next-line no-new
+    expect(() => new ERC725(mockSchema, address, { test: false })).toThrowError(
+      'Incorrect or unsupported provider',
+    );
   });
 
   it('should throw when calling getData without address & provider options set', async () => {
@@ -73,14 +71,14 @@ describe('Running @erc725/erc725.js tests...', () => {
     try {
       await erc725.getData('LSP3Profile');
     } catch (error: any) {
-      assert.deepStrictEqual(error.message, 'Missing ERC725 contract address.');
+      expect(error.message).toEqual('Missing ERC725 contract address.');
     }
 
     try {
       erc725.options.address = address;
       await erc725.getData('LSP3Profile');
     } catch (error: any) {
-      assert.deepStrictEqual(error.message, 'Missing provider.');
+      expect(error.message).toEqual('Missing provider.');
     }
   });
 
@@ -96,7 +94,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         'hello',
         '0x6c54ad4814ed6de85b9786e79de48ad0d597a243158194fa6b3604254ff58f9c2e4ffcc080e18a68c8e813f720b893c8d47d6f757b9e288a5814263642811c1b1c',
       );
-      assert.deepStrictEqual(res, true);
+      expect(res).toEqual(true);
     });
 
     it('should return true if the signature is valid [mock HttpProvider]', async () => {
@@ -112,7 +110,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         '0x6c54ad4814ed6de85b9786e79de48ad0d597a243158194fa6b3604254ff58f9c2e4ffcc080e18a68c8e813f720b893c8d47d6f757b9e288a5814263642811c1b1c',
       );
 
-      assert.deepStrictEqual(res, true);
+      expect(res).toEqual(true);
     });
 
     it('should return true if the signature is valid [mock EthereumProvider]', async () => {
@@ -128,7 +126,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         '0x6c54ad4814ed6de85b9786e79de48ad0d597a243158194fa6b3604254ff58f9c2e4ffcc080e18a68c8e813f720b893c8d47d6f757b9e288a5814263642811c1b1c',
       );
 
-      assert.deepStrictEqual(res, true);
+      expect(res).toEqual(true);
     });
 
     it('should return false if the signature is invalid [using rpcUrl]', async () => {
@@ -146,10 +144,9 @@ describe('Running @erc725/erc725.js tests...', () => {
           '0x6c54ad4814ed6de85b9786e79de48ad0d597a243158194fa6b3604254ff58f9c2e4ffcc080e18a68c8e813f720b893c8d47d6f757b9e288a5814263642811c1b1c',
         );
         // should not reach this line
-        assert.deepStrictEqual(true, false);
+        expect(true).toEqual(false);
       } catch (error: any) {
-        assert.deepStrictEqual(
-          error.message,
+        expect(error.message).toEqual(
           `Error when checking signature. Is ${contractAddress} a valid contract address which supports EIP-1271 standard?`,
         );
       }
@@ -168,7 +165,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         '0xcafecafecafecafecafe6ce85b786ef79de48a43158194fa6b3604254ff58f9c2e4ffcc080e18a68c8e813f720b893c8d47d6f757b9e288a5814263642811c1b1c',
       );
 
-      assert.deepStrictEqual(res, false);
+      expect(res).toEqual(false);
     });
   });
 
@@ -203,10 +200,10 @@ describe('Running @erc725/erc725.js tests...', () => {
         value: null,
       };
 
-      assert.deepStrictEqual(data, expectedResult);
+      expect(data).toEqual(expectedResult);
 
       const dataArray = await erc725.getData(['ThisKeyDoesNotExist']);
-      assert.deepStrictEqual(dataArray, [expectedResult]);
+      expect(dataArray).toEqual([expectedResult]);
     });
 
     it('should return [] if the key of type Array does not exist in the contract', async () => {
@@ -225,14 +222,14 @@ describe('Running @erc725/erc725.js tests...', () => {
       );
 
       const data = await erc725.getData('NonExistingArray[]');
-      assert.deepStrictEqual(data, {
+      expect(data).toEqual({
         name: 'NonExistingArray[]',
         key: '0xd6cbdbfc8d25c9ce4720b5fe6fa8fc536803944271617bf5425b4bd579195840',
         value: [],
       });
 
       const dataArray = await erc725.getData(['NonExistingArray[]']);
-      assert.deepStrictEqual(dataArray, [
+      expect(dataArray).toEqual([
         {
           name: 'NonExistingArray[]',
           key: '0xd6cbdbfc8d25c9ce4720b5fe6fa8fc536803944271617bf5425b4bd579195840',
@@ -284,7 +281,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         web3.currentProvider,
       );
       const result = await erc725.getData();
-      assert.deepStrictEqual(result, e2eResults);
+      expect(result).toEqual(e2eResults);
     });
 
     it('with web3.currentProvider', async () => {
@@ -294,7 +291,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         web3.currentProvider,
       );
       const result = await erc725.getData();
-      assert.deepStrictEqual(result, e2eResults);
+      expect(result).toEqual(e2eResults);
     });
   });
 
@@ -333,7 +330,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         );
 
         const [result] = await erc725.getData();
-        assert.deepStrictEqual(result, {
+        expect(result).toEqual({
           name: 'LSP1UniversalReceiverDelegate',
           key: '0x0cfc51aec37c55a4d0b1a65c6255c4bf2fbdf6277f3cc0730c45b828b6db8b47',
           value: '0x36e4Eb6Ee168EF54B1E8e850ACBE51045214B313',
@@ -385,7 +382,7 @@ describe('Running @erc725/erc725.js tests...', () => {
           web3.currentProvider,
         );
         const result = await erc725.getData();
-        assert.deepStrictEqual(result, e2eResults);
+        expect(result).toEqual(e2eResults);
       });
     });
   });
@@ -419,7 +416,7 @@ describe('Running @erc725/erc725.js tests...', () => {
       );
 
       const data = await erc725.fetchData('LSP3Profile');
-      assert.deepStrictEqual(data, {
+      expect(data).toEqual({
         name: 'LSP3Profile',
         key: '0x5ef83ad9559033e6e941db7d7c495acdce616347d28e90c7ce47cbfcfcad3bc5',
         value: null,
@@ -486,7 +483,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         },
         'SupportedStandards:LSP3Profile',
       ]);
-      assert.deepStrictEqual(data, [
+      expect(data).toEqual([
         {
           key: '0x48643a15ac5407a175674ab0f8c92df5ae90694dac72ebf0a058fb2599e3b06a',
           name: 'MyURL',
@@ -524,7 +521,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         ]);
         const erc725 = new ERC725(mockSchema, address, provider);
         const result = await erc725.getData();
-        assert.deepStrictEqual(result, fullResults);
+        expect(result).toEqual(fullResults);
       });
 
       it('with ethereumProvider EIP 1193', async () => {
@@ -533,7 +530,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         ]);
         const erc725 = new ERC725(mockSchema, address, provider);
         const result = await erc725.getData();
-        assert.deepStrictEqual(result, fullResults);
+        expect(result).toEqual(fullResults);
       });
 
       const testJSONURLSchema: ERC725JSONSchema = {
@@ -565,7 +562,7 @@ describe('Running @erc725/erc725.js tests...', () => {
         const result = await erc725.fetchData('TestJSONURL');
         fetchStub.restore();
 
-        assert.deepStrictEqual(result, {
+        expect(result).toEqual({
           key: testJSONURLSchema.key,
           name: testJSONURLSchema.name,
           value: JSON.parse(jsonString),
@@ -595,18 +592,18 @@ describe('Running @erc725/erc725.js tests...', () => {
         const fetchStub = sinon.stub(global, 'fetch');
         fetchStub.onCall(0).returns(Promise.resolve(new Response(jsonString)));
         const result = await erc725.fetchData('TestJSONURL');
-        assert.deepStrictEqual(result, {
+        expect(result).toEqual({
           key: testJSONURLSchema.key,
           name: testJSONURLSchema.name,
           value: JSON.parse(jsonString),
         });
         fetchStub.restore();
 
-        assert.ok(
+        expect(
           fetchStub.calledWith(
             `${ipfsGateway}/ipfs/QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd`, // this value comes from the mockSchema
           ),
-        );
+        ).toEqual(true);
       });
 
       if (contractVersion.interface === ERC725Y_INTERFACE_IDS['3.0']) {
@@ -648,7 +645,7 @@ describe('Running @erc725/erc725.js tests...', () => {
             dynamicKeyParts: '0xcafecafecafecafecafecafecafecafecafecafe',
           });
           fetchStub.restore();
-          assert.deepStrictEqual(result, {
+          expect(result).toEqual({
             name: 'JSONForAddress:cafecafecafecafecafecafecafecafecafecafe',
             key: '0x84b02f6e50a0a0819a4f0000cafecafecafecafecafecafecafecafecafecafe',
             value: JSON.parse(jsonString),
@@ -702,8 +699,7 @@ describe('Running @erc725/erc725.js tests...', () => {
 
           fetchStub.restore();
 
-          assert.strictEqual(
-            Object.prototype.toString.call(result.value),
+          expect(Object.prototype.toString.call(result.value)).toEqual(
             '[object Uint8Array]',
           );
         });
@@ -727,7 +723,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               }
             : schemaElement.key,
         );
-        assert.deepStrictEqual(result, {
+        expect(result).toEqual({
           name: schemaElement.name,
           key: schemaElement.key,
           value: schemaElement.expectedResult,
@@ -748,7 +744,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               }
             : schemaElement.key,
         );
-        assert.deepStrictEqual(result, {
+        expect(result).toEqual({
           name: schemaElement.name,
           key: schemaElement.key,
           value: schemaElement.expectedResult,
@@ -785,7 +781,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               ) as string,
             );
           } // end for loop
-          assert.deepStrictEqual(results, schemaElement.returnGraphData);
+          expect(results).toEqual(schemaElement.returnGraphData);
         });
 
         it('decodes data values in array: ' + schemaElement.name, async () => {
@@ -824,7 +820,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               } else {
                 results.push(result);
               }
-              assert.deepStrictEqual(results, schemaElement.expectedResult);
+              expect(results).toEqual(schemaElement.expectedResult);
             }
           } // end for loop
         });
@@ -837,7 +833,7 @@ describe('Running @erc725/erc725.js tests...', () => {
           // handle '0x'....
           // intendedResults = intendedResults.filter(e => e !== '0x' && e.value !== '0x')
           const results = encodeKey(schemaElement, data);
-          assert.deepStrictEqual(results, intendedResults);
+          expect(results).toEqual(intendedResults);
         });
 
         it(`decodes all data values for keyType "Array" in: ${schemaElement.name}`, async () => {
@@ -846,7 +842,7 @@ describe('Running @erc725/erc725.js tests...', () => {
           );
           const intendedResults = schemaElement.expectedResult;
           const results = decodeKey(schemaElement, values);
-          assert.deepStrictEqual(results, intendedResults);
+          expect(results).toEqual(intendedResults);
         });
 
         it(`encodes all data values for keyType "Array" in naked class instance: ${schemaElement.name}`, async () => {
@@ -874,7 +870,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               value: data,
             },
           ]);
-          assert.deepStrictEqual(results, intendedResult);
+          expect(results).toEqual(intendedResult);
         });
 
         it(`decode all data values for keyType "Array" in naked class instance: ${schemaElement.name}`, async () => {
@@ -889,7 +885,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               value: values,
             },
           ]);
-          assert.deepStrictEqual(results[0].value, intendedResults);
+          expect(results[0].value).toEqual(intendedResults);
         });
       } else {
         if (schemaElement.dynamicKeyParts) {
@@ -905,7 +901,7 @@ describe('Running @erc725/erc725.js tests...', () => {
             schemaElement.expectedResult,
             schemaElement.name,
           );
-          assert.deepStrictEqual(result, schemaElement.returnGraphData);
+          expect(result).toEqual(schemaElement.returnGraphData);
         });
 
         it('decodes data value for: ' + schemaElement.name, async () => {
@@ -915,7 +911,7 @@ describe('Running @erc725/erc725.js tests...', () => {
             schemaElement.returnGraphData,
             schemaElement.name,
           );
-          assert.deepStrictEqual(result, schemaElement.expectedResult);
+          expect(result).toEqual(schemaElement.expectedResult);
         });
 
         it(`Encode data value from naked class instance for ${schemaElement.name}`, async () => {
@@ -926,7 +922,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               value: schemaElement.expectedResult,
             },
           ]);
-          assert.deepStrictEqual(result, {
+          expect(result).toEqual({
             keys: [schemaElement.key],
             values: [schemaElement.returnGraphData],
           });
@@ -941,7 +937,7 @@ describe('Running @erc725/erc725.js tests...', () => {
               dynamicKeyParts: schemaElement.dynamicKeyParts,
             },
           ]);
-          assert.deepStrictEqual(result[0].value, schemaElement.expectedResult);
+          expect(result[0].value).toEqual(schemaElement.expectedResult);
         });
       }
     }
@@ -1024,16 +1020,13 @@ describe('Running @erc725/erc725.js tests...', () => {
       },
     ]);
 
-    assert.deepStrictEqual(
-      decodedData[0].value.url,
+    expect(decodedData[0].value.url).toEqual(
       'ipfs://QmbKvCVEePiDKxuouyty9bMsWBAxZDGr2jhxd4pLGLx95D',
     );
-    assert.deepStrictEqual(
-      decodedData[0].value.verification.data,
+    expect(decodedData[0].value.verification.data).toEqual(
       hashData(json, SUPPORTED_VERIFICATION_METHOD_STRINGS.KECCAK256_UTF8),
     );
-    assert.deepStrictEqual(
-      decodedData[0].value.verification.method,
+    expect(decodedData[0].value.verification.method).toEqual(
       SUPPORTED_VERIFICATION_METHOD_STRINGS.KECCAK256_UTF8,
     );
   });
@@ -1215,30 +1208,30 @@ describe('Running @erc725/erc725.js tests...', () => {
     describe(`encodePermissions`, () => {
       testCases.forEach((testCase) => {
         it(`Encodes ${testCase.hex} permission correctly`, () => {
-          assert.deepStrictEqual(
-            ERC725.encodePermissions(testCase.permissions),
+          expect(ERC725.encodePermissions(testCase.permissions)).toEqual(
             testCase.hex,
           );
-          assert.deepStrictEqual(
+          expect(
             erc725Instance.encodePermissions(testCase.permissions),
-            testCase.hex,
-          );
+          ).toEqual(testCase.hex);
         });
       });
 
       it('Defaults permissions to false if not passed', () => {
-        assert.deepStrictEqual(
+        expect(
           ERC725.encodePermissions({
             EDITPERMISSIONS: true,
             SETDATA: true,
           }),
+        ).toEqual(
           '0x0000000000000000000000000000000000000000000000000000000000040004',
         );
-        assert.deepStrictEqual(
+        expect(
           erc725Instance.encodePermissions({
             EDITPERMISSIONS: true,
             SETDATA: true,
           }),
+        ).toEqual(
           '0x0000000000000000000000000000000000000000000000000000000000040004',
         );
       });
@@ -1247,77 +1240,73 @@ describe('Running @erc725/erc725.js tests...', () => {
     describe('decodePermissions', () => {
       testCases.forEach((testCase) => {
         it(`Decodes ${testCase.hex} permission correctly`, () => {
-          assert.deepStrictEqual(
-            ERC725.decodePermissions(testCase.hex),
+          expect(ERC725.decodePermissions(testCase.hex)).toEqual(
             testCase.permissions,
           );
-          assert.deepStrictEqual(
-            erc725Instance.decodePermissions(testCase.hex),
+          expect(erc725Instance.decodePermissions(testCase.hex)).toEqual(
             testCase.permissions,
           );
         });
       });
       it(`Decodes 0xfff...fff admin permission correctly`, () => {
-        assert.deepStrictEqual(
+        expect(
           ERC725.decodePermissions(
             '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           ),
-          {
-            CHANGEOWNER: true,
-            ADDCONTROLLER: true,
-            EDITPERMISSIONS: true,
-            ADDEXTENSIONS: true,
-            CHANGEEXTENSIONS: true,
-            ADDUNIVERSALRECEIVERDELEGATE: true,
-            CHANGEUNIVERSALRECEIVERDELEGATE: true,
-            REENTRANCY: true,
-            SUPER_TRANSFERVALUE: true,
-            TRANSFERVALUE: true,
-            SUPER_CALL: true,
-            CALL: true,
-            SUPER_STATICCALL: true,
-            STATICCALL: true,
-            SUPER_DELEGATECALL: true,
-            DELEGATECALL: true,
-            DEPLOY: true,
-            SUPER_SETDATA: true,
-            SETDATA: true,
-            ENCRYPT: true,
-            DECRYPT: true,
-            SIGN: true,
-            EXECUTE_RELAY_CALL: true,
-          },
-        );
-        assert.deepStrictEqual(
+        ).toStrictEqual({
+          CHANGEOWNER: true,
+          ADDCONTROLLER: true,
+          EDITPERMISSIONS: true,
+          ADDEXTENSIONS: true,
+          CHANGEEXTENSIONS: true,
+          ADDUNIVERSALRECEIVERDELEGATE: true,
+          CHANGEUNIVERSALRECEIVERDELEGATE: true,
+          REENTRANCY: true,
+          SUPER_TRANSFERVALUE: true,
+          TRANSFERVALUE: true,
+          SUPER_CALL: true,
+          CALL: true,
+          SUPER_STATICCALL: true,
+          STATICCALL: true,
+          SUPER_DELEGATECALL: true,
+          DELEGATECALL: true,
+          DEPLOY: true,
+          SUPER_SETDATA: true,
+          SETDATA: true,
+          ENCRYPT: true,
+          DECRYPT: true,
+          SIGN: true,
+          EXECUTE_RELAY_CALL: true,
+        });
+        expect(
           erc725Instance.decodePermissions(
             '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           ),
-          {
-            CHANGEOWNER: true,
-            ADDCONTROLLER: true,
-            EDITPERMISSIONS: true,
-            ADDEXTENSIONS: true,
-            CHANGEEXTENSIONS: true,
-            ADDUNIVERSALRECEIVERDELEGATE: true,
-            CHANGEUNIVERSALRECEIVERDELEGATE: true,
-            REENTRANCY: true,
-            SUPER_TRANSFERVALUE: true,
-            TRANSFERVALUE: true,
-            SUPER_CALL: true,
-            CALL: true,
-            SUPER_STATICCALL: true,
-            STATICCALL: true,
-            SUPER_DELEGATECALL: true,
-            DELEGATECALL: true,
-            DEPLOY: true,
-            SUPER_SETDATA: true,
-            SETDATA: true,
-            ENCRYPT: true,
-            DECRYPT: true,
-            SIGN: true,
-            EXECUTE_RELAY_CALL: true,
-          },
-        );
+        ).toEqual({
+          CHANGEOWNER: true,
+          ADDCONTROLLER: true,
+          EDITPERMISSIONS: true,
+          ADDEXTENSIONS: true,
+          CHANGEEXTENSIONS: true,
+          ADDUNIVERSALRECEIVERDELEGATE: true,
+          CHANGEUNIVERSALRECEIVERDELEGATE: true,
+          REENTRANCY: true,
+          SUPER_TRANSFERVALUE: true,
+          TRANSFERVALUE: true,
+          SUPER_CALL: true,
+          CALL: true,
+          SUPER_STATICCALL: true,
+          STATICCALL: true,
+          SUPER_DELEGATECALL: true,
+          DELEGATECALL: true,
+          DEPLOY: true,
+          SUPER_SETDATA: true,
+          SETDATA: true,
+          ENCRYPT: true,
+          DECRYPT: true,
+          SIGN: true,
+          EXECUTE_RELAY_CALL: true,
+        });
       });
     });
   });
@@ -1337,7 +1326,7 @@ describe('getSchema', () => {
 
     const foundSchema = erc725.getSchema(schema.key);
 
-    assert.deepStrictEqual(foundSchema, schema);
+    expect(foundSchema).toEqual(schema);
   });
   it('should find key in schema provided as parameter', async () => {
     const schema: ERC725JSONSchema = {
@@ -1352,7 +1341,7 @@ describe('getSchema', () => {
 
     const foundSchema = erc725.getSchema(schema.key, [schema]);
 
-    assert.deepStrictEqual(foundSchema, schema);
+    expect(foundSchema).toEqual(schema);
   });
 });
 
@@ -1360,29 +1349,29 @@ describe('encodeKeyName', () => {
   const erc725Instance = new ERC725([]);
 
   it('is available on instance and class', () => {
-    assert.deepStrictEqual(
-      ERC725.encodeKeyName('MyKeyName'),
+    expect(ERC725.encodeKeyName('MyKeyName')).toEqual(
       '0x35e6950bc8d21a1699e58328a3c4066df5803bb0b570d0150cb3819288e764b2',
     );
-    assert.deepStrictEqual(
-      erc725Instance.encodeKeyName('MyKeyName'),
+    expect(erc725Instance.encodeKeyName('MyKeyName')).toEqual(
       '0x35e6950bc8d21a1699e58328a3c4066df5803bb0b570d0150cb3819288e764b2',
     );
   });
 
   it('works for dynamic keys', () => {
-    assert.deepStrictEqual(
+    expect(
       ERC725.encodeKeyName(
         'FavouriteFood:<address>',
         '0xa4FBbFe353124E6fa6Bb7f8e088a9269dF552EA2',
       ),
+    ).toEqual(
       '0x31145577efe228036af40000a4fbbfe353124e6fa6bb7f8e088a9269df552ea2',
     );
-    assert.deepStrictEqual(
+    expect(
       erc725Instance.encodeKeyName(
         'FavouriteFood:<address>',
         '0xa4FBbFe353124E6fa6Bb7f8e088a9269dF552EA2',
       ),
+    ).toEqual(
       '0x31145577efe228036af40000a4fbbfe353124e6fa6bb7f8e088a9269df552ea2',
     );
   });
@@ -1392,8 +1381,8 @@ describe('supportsInterface', () => {
   const erc725Instance = new ERC725([]);
 
   it('is available on instance and class', () => {
-    assert.typeOf(ERC725.supportsInterface, 'function');
-    assert.typeOf(erc725Instance.supportsInterface, 'function');
+    expect(typeof ERC725.supportsInterface).toEqual('function');
+    expect(typeof erc725Instance.supportsInterface).toEqual('function');
   });
 
   const interfaceId = INTERFACE_IDS_0_12_0.LSP1UniversalReceiver;
@@ -1407,7 +1396,7 @@ describe('supportsInterface', () => {
         rpcUrl,
       });
     } catch (error: any) {
-      assert.deepStrictEqual(error.message, 'Invalid address');
+      expect(error.message).toEqual('Invalid address');
     }
   });
 
@@ -1419,7 +1408,7 @@ describe('supportsInterface', () => {
         rpcUrl: undefined,
       });
     } catch (error: any) {
-      assert.deepStrictEqual(error.message, 'Missing RPC URL');
+      expect(error.message).toEqual('Missing RPC URL');
     }
   });
 
@@ -1430,7 +1419,7 @@ describe('checkPermissions', () => {
   const erc725Instance = new ERC725([]);
 
   it('is available on instance', () => {
-    assert.typeOf(erc725Instance.checkPermissions, 'function');
+    expect(typeof erc725Instance.checkPermissions).toEqual('function');
 
     const requiredPermissions = [
       '0x0000000000000000000000000000000000000000000000000000000000000004',
@@ -1443,11 +1432,11 @@ describe('checkPermissions', () => {
       grantedPermissions,
     );
 
-    assert.equal(result, false);
+    expect(result).toEqual(false);
   });
 
   it('is available on class', () => {
-    assert.typeOf(ERC725.checkPermissions, 'function');
+    expect(typeof ERC725.checkPermissions).toEqual('function');
 
     const requiredPermissions = [
       '0x0000000000000000000000000000000000000000000000000000000000000004',
@@ -1461,7 +1450,7 @@ describe('checkPermissions', () => {
       grantedPermissions,
     );
 
-    assert.equal(result, false);
+    expect(result).toEqual(false);
   });
 });
 
@@ -1469,29 +1458,27 @@ describe('decodeMappingKey', () => {
   const erc725Instance = new ERC725([]);
 
   it('is available on instance and class', () => {
-    assert.deepStrictEqual(
+    expect(
       ERC725.decodeMappingKey(
         '0x35e6950bc8d21a1699e50000cafecafecafecafecafecafecafecafecafecafe',
         'MyKeyName:<address>',
       ),
-      [
-        {
-          type: 'address',
-          value: '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe',
-        },
-      ],
-    );
-    assert.deepStrictEqual(
+    ).toStrictEqual([
+      {
+        type: 'address',
+        value: '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe',
+      },
+    ]);
+    expect(
       erc725Instance.decodeMappingKey(
         '0x35e6950bc8d21a1699e50000cafecafecafecafecafecafecafecafecafecafe',
         'MyKeyName:<address>',
       ),
-      [
-        {
-          type: 'address',
-          value: '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe',
-        },
-      ],
-    );
+    ).toEqual([
+      {
+        type: 'address',
+        value: '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe',
+      },
+    ]);
   });
 });

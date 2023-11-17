@@ -17,8 +17,13 @@
  * @date 2022
  */
 
-import { isHex, padLeft } from 'web3-utils';
-import { isAddress, keccak256, toBeHex, toUtf8Bytes } from 'ethers';
+import {
+  isAddress,
+  isHexString,
+  keccak256,
+  toBeHex,
+  toUtf8Bytes,
+} from 'ethers';
 import { guessKeyTypeFromKeyName } from './utils';
 import { DynamicKeyParts } from '../types/dynamicKeys';
 import { ERC725JSONSchemaKey } from '../types/ERC725JSONSchema';
@@ -100,7 +105,7 @@ export const encodeDynamicKeyPart = (
 
       const hexNumber = toBeHex(value).slice(2);
       if (hexNumber.length <= bytes * 2) {
-        return padLeft(hexNumber, bytes * 2);
+        return hexNumber.padStart(bytes * 2, '0');
       }
 
       return hexNumber.slice(-bytes * 2);
@@ -116,7 +121,7 @@ export const encodeDynamicKeyPart = (
         );
       }
 
-      if (!isHex(valueWithoutPrefix)) {
+      if (!isHexString('0x' + valueWithoutPrefix)) {
         throw new Error(
           `Wrong value: ${value} for dynamic key with type: ${type}. Value is not in hex.`,
         );

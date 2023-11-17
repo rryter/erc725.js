@@ -14,7 +14,6 @@
 
 /* eslint-disable no-unused-expressions */
 
-import { expect } from 'chai';
 import assert from 'assert';
 
 import { hexlify, keccak256, toUtf8Bytes } from 'ethers';
@@ -355,14 +354,13 @@ describe('utils', () => {
         );
       });
       it(`decodes correctly valueContent: ${testCase.valueContent} to valueType: ${testCase.valueType}`, () => {
-        assert.deepStrictEqual(
+        expect(
           decodeKeyValue(
             testCase.valueContent,
             testCase.valueType as ERC725JSONSchemaValueType,
             testCase.encodedValue,
           ),
-          testCase.decodedValue,
-        );
+        ).toEqual(testCase.decodedValue);
       });
     });
   });
@@ -385,7 +383,7 @@ describe('utils', () => {
             testCase.valueType,
             testCase.decodedValue,
           ),
-        ).to.eq(testCase.encodedValue);
+        ).toEqual(testCase.encodedValue);
       });
     });
   });
@@ -794,13 +792,10 @@ describe('utils', () => {
 
       const generatedSchemas = generateSchemasFromDynamicKeys(keys, schemas);
 
-      expect(generatedSchemas.length).to.equal(keys.length);
+      expect(generatedSchemas.length).toEqual(keys.length);
 
       generatedSchemas.forEach((schema) => {
-        expect(
-          isDynamicKeyName(schema.name),
-          'generated schema key should not be dynamic',
-        ).to.be.false;
+        expect(isDynamicKeyName(schema.name)).toEqual(false);
       });
     });
   });

@@ -22,15 +22,14 @@
   in accordance with implementation of smart contract interfaces of ERC725
 */
 
-import AbiCoder from 'web3-eth-abi';
-
+import { AbiCoder } from 'ethers';
 import { JsonRpc } from '../types/JsonRpc';
 import { Method } from '../types/Method';
 import { constructJSONRPC, decodeResult } from '../lib/provider-wrapper-utils';
 import { ProviderTypes } from '../types/provider';
 import { ERC725_VERSION, ERC725Y_INTERFACE_IDS } from '../constants/constants';
 
-const abiCoder = AbiCoder;
+const abiCoder = new AbiCoder();
 
 interface GetDataReturn {
   key: string;
@@ -149,7 +148,7 @@ export class ProviderWrapper {
     signature: string,
   ): Promise<string> {
     if (this.type === ProviderTypes.ETHEREUM) {
-      const encodedParams = abiCoder.encodeParameters(
+      const encodedParams = abiCoder.encode(
         ['bytes32', 'bytes'],
         [hash, signature],
       );
@@ -174,7 +173,7 @@ export class ProviderWrapper {
       ) as unknown as string;
     }
 
-    const encodedParams = abiCoder.encodeParameters(
+    const encodedParams = abiCoder.encode(
       ['bytes32', 'bytes'],
       [hash, signature],
     );
@@ -246,7 +245,7 @@ export class ProviderWrapper {
           address,
           method,
           this.gas,
-          abiCoder.encodeParameter('bytes32[]', keyHashes),
+          abiCoder.encode(['bytes32[]'], [keyHashes]),
         ),
       );
 
@@ -263,7 +262,7 @@ export class ProviderWrapper {
         address,
         method,
         this.gas,
-        abiCoder.encodeParameter('bytes32[]', keyHashes),
+        abiCoder.encode(['bytes32[]'], [keyHashes]),
       ),
     ];
 

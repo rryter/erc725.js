@@ -14,8 +14,6 @@
 
 /* eslint-disable no-unused-expressions */
 
-import { expect } from 'chai';
-
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
 import { decodeData, decodeTupleKeyValue, isValidTuple } from './decodeData';
 
@@ -66,7 +64,7 @@ describe('decodeData', () => {
       schemas,
     );
 
-    expect(decodedData.map(({ name }) => name)).to.eql(['KeyOne', 'KeyTwo']);
+    expect(decodedData.map(({ name }) => name)).toEqual(['KeyOne', 'KeyTwo']);
   });
 
   it('parses non array input correctly', () => {
@@ -78,7 +76,7 @@ describe('decodeData', () => {
       schemas,
     );
 
-    expect(decodedData.name).to.eql('KeyOne');
+    expect(decodedData.name).toEqual('KeyOne');
   });
 
   it('parses type tuples/Mixed correctly', () => {
@@ -102,7 +100,7 @@ describe('decodeData', () => {
       [schema],
     );
 
-    expect(decodedData.value).to.eql(['0x11223344', 12]);
+    expect(decodedData.value).toEqual(['0x11223344', 12]);
   });
 
   it('parses type Array correctly', () => {
@@ -135,8 +133,8 @@ describe('decodeData', () => {
       ],
     );
 
-    expect(decodedData.name).to.eql('LSP12IssuedAssets[]');
-    expect(decodedData.value).to.eql([
+    expect(decodedData.name).toEqual('LSP12IssuedAssets[]');
+    expect(decodedData.value).toEqual([
       '0xD94353D9B005B3c0A9Da169b768a31C57844e490',
       '0xDaea594E385Fc724449E3118B2Db7E86dFBa1826',
     ]);
@@ -168,7 +166,7 @@ describe('decodeData', () => {
       schemas,
     );
 
-    expect(decodedData.map(({ name }) => name)).to.eql([
+    expect(decodedData.map(({ name }) => name)).toEqual([
       'MyKeyName:aaaabbbbccccddddeeeeffff111122223333444455556666777788889999aaaa:true',
       'MyDynamicKey:cafecafecafecafecafecafecafecafecafecafe',
       'KeyTwo',
@@ -195,7 +193,7 @@ describe('tuple', () => {
             testCase.valueType,
             testCase.encodedValue,
           ),
-        ).to.eql(testCase.decodedValue);
+        ).toEqual(testCase.decodedValue);
       });
     });
   });
@@ -272,13 +270,13 @@ describe('tuple', () => {
         if (testCase.shouldThrow) {
           expect(() => {
             isValidTuple(testCase.valueType, testCase.valueContent);
-          }).to.throw();
+          }).toThrow();
           return;
         }
 
-        expect(
-          isValidTuple(testCase.valueType, testCase.valueContent),
-        ).to.equal(testCase.isTuple);
+        expect(isValidTuple(testCase.valueType, testCase.valueContent)).toEqual(
+          testCase.isTuple,
+        );
       });
     });
   });

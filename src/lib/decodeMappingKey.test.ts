@@ -14,7 +14,6 @@
 
 /* eslint-disable no-unused-expressions */
 
-import { expect } from 'chai';
 import { decodeMappingKey } from './decodeMappingKey';
 
 describe('decodeDynamicKeyParts', () => {
@@ -150,12 +149,12 @@ describe('decodeDynamicKeyParts', () => {
         record.key.encoded,
         record.key.name,
       );
-      expect(record.dynamicKeyParts.length).to.equal(
+      expect(record.dynamicKeyParts.length).toEqual(
         decodedDynamicKeyParts.length,
       );
       record.dynamicKeyParts.forEach((keyPart, index) => {
-        expect(keyPart.type).to.equal(decodedDynamicKeyParts[index].type);
-        expect(keyPart.value).to.equal(decodedDynamicKeyParts[index].value);
+        expect(keyPart.type).toEqual(decodedDynamicKeyParts[index].type);
+        expect(keyPart.value).toEqual(decodedDynamicKeyParts[index].value);
       });
     });
   });
@@ -172,9 +171,9 @@ describe('decodeDynamicKeyParts', () => {
       '0x35e6950bc8d21a1699e50000cafecafecafecafecafecafecafecafecafecafe',
       schema.name,
     );
-    expect(decodedDynamicKeyParts.length).to.equal(1);
-    expect(decodedDynamicKeyParts[0].type).to.equal('address');
-    expect(decodedDynamicKeyParts[0].value).to.equal(
+    expect(decodedDynamicKeyParts.length).toEqual(1);
+    expect(decodedDynamicKeyParts[0].type).toEqual('address');
+    expect(decodedDynamicKeyParts[0].value).toEqual(
       '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe',
     );
   });
@@ -184,7 +183,7 @@ describe('decodeDynamicKeyParts', () => {
       '35e6950bc8d21a1699e500000000000000000000000000000000000000000001',
       'MyKeyName:<bool>',
     );
-    expect(decodedDynamicKeyParts[0].value).to.equal(true);
+    expect(decodedDynamicKeyParts[0].value).toEqual(true);
   });
 
   it('throws if not hex encoded key', () => {
@@ -193,7 +192,7 @@ describe('decodeDynamicKeyParts', () => {
         '0x3234535343fXXWGWXWDSWDAEDFAEDr5434534grdgrdggrdgdrgdgrd098594334',
         'MyKeyName:<bool>',
       ),
-    ).to.throw(`Invalid encodedKey, must be a hexadecimal value`);
+    ).toThrow(`Invalid encodedKey, must be a hexadecimal value`);
   });
 
   it('throws if incorrect length key', () => {
@@ -202,7 +201,7 @@ describe('decodeDynamicKeyParts', () => {
         '0x35e6950bc8d21a1699e50000000000000000000000000000000000000000000135e6',
         'MyKeyName:<bool>',
       ),
-    ).to.throw(
+    ).toThrow(
       `Invalid encodedKey length, key must be 32 bytes long hexadecimal value`,
     );
   });

@@ -19,7 +19,7 @@
  * @date 2020
  */
 
-import { getAddress, isAddress, toBeHex } from 'ethers';
+import { getAddress, hexlify, isAddress, toBeHex, toUtf8Bytes } from 'ethers';
 import { arrToBufArr } from 'ethereumjs-util';
 
 import {
@@ -593,4 +593,20 @@ export function stripHexPrefix(hexString) {
     return hexString.slice(2);
   }
   return hexString;
+}
+
+/**
+ * Convert a string to hex with a leading 0x
+ * @param value string
+ * @returns Hex representation of input string
+ */
+export function utf8ToHex(value: string) {
+  return hexlify(toUtf8Bytes(value));
+}
+
+export function prepend0x(value: string) {
+  if (!value.startsWith('0x')) {
+    return '0x' + value;
+  }
+  return value;
 }

@@ -27,7 +27,7 @@
     "pretty": true /* Stylize errors and messages using color and context. */,
 
     "lib": ["es2019", "dom"],
-    "types": ["mocha", "node"],
+    "types": ["jest", "node"],
     "typeRoots": ["node_modules/@types", "src/types"]
   },
   "include": ["src", "schemas"],

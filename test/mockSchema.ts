@@ -1,12 +1,11 @@
 // Mock schema for tests
 // make one schema that tests every single type
 
-import { hexlify, toBeHex, toUtf8Bytes, zeroPadValue } from 'ethers';
-import AbiCoder from 'web3-eth-abi';
-import { utf8ToHex } from 'web3-utils';
+import { AbiCoder, hexlify, toBeHex, toUtf8Bytes, zeroPadValue } from 'ethers';
 import { ERC725JSONSchema } from '../src/types/ERC725JSONSchema';
+import { utf8ToHex } from '../src/lib/utils';
 
-const abiCoder = AbiCoder;
+const abiCoder = new AbiCoder();
 
 const arrayLength = (length: number) => zeroPadValue(toBeHex(length), 16);
 
@@ -25,8 +24,8 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: '0x5ef83ad9',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter('bytes', '0x5ef83ad9'),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', ['0x5ef83ad9']),
+    returnRawData: abiCoder.encode(['bytes'], ['0x5ef83ad9']),
+    returnRawDataArray: abiCoder.encode(['bytes[]'], [['0x5ef83ad9']]),
     returnGraphData: '0x5ef83ad9',
     expectedResult: '0x5ef83ad9',
   },
@@ -39,13 +38,20 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'JSONURL',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+        ],
+      ],
+    ),
     returnGraphData:
       '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
     expectedResult: {
@@ -65,13 +71,20 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'AssetURL',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+        ],
+      ],
+    ),
     returnGraphData:
       '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
     expectedResult: {
@@ -91,13 +104,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Keccak256',
     valueType: 'bytes32',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x4d75a97aff0964309140e9821514861e5ddcc827113b70a2b69db16dde0695dc',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0x4d75a97aff0964309140e9821514861e5ddcc827113b70a2b69db16dde0695dc'],
     ), // this is bytes
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x4d75a97aff0964309140e9821514861e5ddcc827113b70a2b69db16dde0695dc',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0x4d75a97aff0964309140e9821514861e5ddcc827113b70a2b69db16dde0695dc']],
+    ),
     returnGraphData:
       '0x4d75a97aff0964309140e9821514861e5ddcc827113b70a2b69db16dde0695dc',
     expectedResult:
@@ -112,13 +126,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Address',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x0c03fba782b07bcf810deb3b7f0595024a444f4e',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0x0c03fba782b07bcf810deb3b7f0595024a444f4e'],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x0c03fba782b07bcf810deb3b7f0595024a444f4e',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0x0c03fba782b07bcf810deb3b7f0595024a444f4e']],
+    ),
     returnGraphData: '0x0c03fba782b07bcf810deb3b7f0595024a444f4e',
     expectedResult: '0x0C03fBa782b07bCf810DEb3b7f0595024A444F4e', // a real address
   },
@@ -131,19 +146,16 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Markdown',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      hexlify(
-        toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
-      ),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [utf8ToHex('# Testing markdown. \n Welcome to markdown **test**.')],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      hexlify(
-        toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
-      ),
-    ]),
-    returnGraphData: hexlify(
-      toUtf8Bytes('# Testing markdown. \n Welcome to markdown **test**.'),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('# Testing markdown. \n Welcome to markdown **test**.')]],
+    ),
+    returnGraphData: utf8ToHex(
+      '# Testing markdown. \n Welcome to markdown **test**.',
     ),
     expectedResult: '# Testing markdown. \n Welcome to markdown **test**.',
   },
@@ -156,11 +168,15 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'String',
     valueType: 'string',
     // Testing data
-    returnRawData: abiCoder.encodeParameter('bytes', utf8ToHex('john-snow')),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('john-snow'),
-    ]),
-    returnGraphData: utf8ToHex('john-snow'),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [hexlify(toUtf8Bytes('john-snow'))],
+    ),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[hexlify(toUtf8Bytes('john-snow'))]],
+    ),
+    returnGraphData: hexlify(toUtf8Bytes('john-snow')),
     expectedResult: 'john-snow',
   },
 
@@ -172,13 +188,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'URL',
     valueType: 'bytes',
     // testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      utf8ToHex('ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd'),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [utf8ToHex('ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd')],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd'),
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd')]],
+    ),
     returnGraphData: utf8ToHex(
       'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
     ),
@@ -195,24 +212,26 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
-      abiCoder.encodeParameter(
-        'bytes',
-        '0xc444009d38d3046bb0cf81fa2cd295ce46a67c78',
+      abiCoder.encode(['bytes'], [arrayLength(2)]), // array length
+      abiCoder.encode(
+        ['bytes'],
+        ['0xc444009d38d3046bb0cf81fa2cd295ce46a67c78'],
       ),
-      abiCoder.encodeParameter(
-        'bytes',
-        '0x4febc3491230571f6e1829e46602e3b110215a2e',
+      abiCoder.encode(
+        ['bytes'],
+        ['0x4febc3491230571f6e1829e46602e3b110215a2e'],
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]), // array length
-      abiCoder.encodeParameter('bytes[]', [
-        '0xc444009d38d3046bb0cf81fa2cd295ce46a67c78',
-      ]),
-      abiCoder.encodeParameter('bytes[]', [
-        '0x4febc3491230571f6e1829e46602e3b110215a2e',
-      ]),
+      abiCoder.encode(['bytes[]'], [[arrayLength(2)]]),
+      abiCoder.encode(
+        ['bytes[]'],
+        [['0xc444009d38d3046bb0cf81fa2cd295ce46a67c78']],
+      ),
+      abiCoder.encode(
+        ['bytes[]'],
+        [['0x4febc3491230571f6e1829e46602e3b110215a2e']],
+      ),
     ],
     returnGraphData: [
       arrayLength(2), // array length
@@ -234,19 +253,20 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
-      abiCoder.encodeParameter('bytes', '0x'),
-      abiCoder.encodeParameter(
-        'bytes',
-        '0x4febc3491230571f6e1829e46602e3b110215a2e',
+      abiCoder.encode(['bytes'], [arrayLength(2)]), // array length
+      abiCoder.encode(['bytes'], ['0x']),
+      abiCoder.encode(
+        ['bytes'],
+        ['0x4febc3491230571f6e1829e46602e3b110215a2e'],
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]),
-      abiCoder.encodeParameter('bytes[]', ['0x']),
-      abiCoder.encodeParameter('bytes[]', [
-        '0x4febc3491230571f6e1829e46602e3b110215a2e',
-      ]),
+      abiCoder.encode(['bytes[]'], [[arrayLength(2)]]),
+      abiCoder.encode(['bytes[]'], [['0x']]),
+      abiCoder.encode(
+        ['bytes[]'],
+        [['0x4febc3491230571f6e1829e46602e3b110215a2e']],
+      ),
     ],
     returnGraphData: [
       arrayLength(2), // array length
@@ -266,24 +286,38 @@ export const mockSchema: (ERC725JSONSchema & {
     // testing data
     // the full array of values
     returnRawData: [
-      abiCoder.encodeParameter('bytes', arrayLength(2)), // array length
-      abiCoder.encodeParameter(
-        'bytes',
-        '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+      abiCoder.encode(['bytes'], [arrayLength(2)]),
+      abiCoder.encode(
+        ['bytes'],
+        [
+          '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+        ],
       ),
-      abiCoder.encodeParameter(
-        'bytes',
-        '0x6f357c6a81bd0b7ed5ac354abbf24619ce16933f00a4bdfa8fcaf3791d25f69b497abf88697066733a2f2f516d6245724b6833466a7378787878787878787878787878787878787878787878787878787639414a4a765a6264',
+      abiCoder.encode(
+        ['bytes'],
+        [
+          '0x6f357c6a81bd0b7ed5ac354abbf24619ce16933f00a4bdfa8fcaf3791d25f69b497abf88697066733a2f2f516d6245724b6833466a7378787878787878787878787878787878787878787878787878787639414a4a765a6264',
+        ],
       ),
     ],
     returnRawDataArray: [
-      abiCoder.encodeParameter('bytes[]', [arrayLength(2)]),
-      abiCoder.encodeParameter('bytes[]', [
-        '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
-      ]),
-      abiCoder.encodeParameter('bytes[]', [
-        '0x6f357c6a81bd0b7ed5ac354abbf24619ce16933f00a4bdfa8fcaf3791d25f69b497abf88697066733a2f2f516d6245724b6833466a7378787878787878787878787878787878787878787878787878787639414a4a765a6264',
-      ]),
+      abiCoder.encode(['bytes[]'], [[arrayLength(2)]]),
+      abiCoder.encode(
+        ['bytes[]'],
+        [
+          [
+            '0x6f357c6a733e78f2fc4a3304c141e8424d02c9069fe08950c6514b27289ead8ef4faa49d697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+          ],
+        ],
+      ),
+      abiCoder.encode(
+        ['bytes[]'],
+        [
+          [
+            '0x6f357c6a81bd0b7ed5ac354abbf24619ce16933f00a4bdfa8fcaf3791d25f69b497abf88697066733a2f2f516d6245724b6833466a7378787878787878787878787878787878787878787878787878787639414a4a765a6264',
+          ],
+        ],
+      ),
     ],
     returnGraphData: [
       arrayLength(2), // array length
@@ -320,10 +354,11 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'String',
     valueType: 'string',
     // Test data
-    returnRawData: abiCoder.encodeParameter('bytes', utf8ToHex('Great-string')),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('Great-string'),
-    ]),
+    returnRawData: abiCoder.encode(['bytes'], [utf8ToHex('Great-string')]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('Great-string')]],
+    ),
     returnGraphData: utf8ToHex('Great-string'),
     expectedResult: 'Great-string',
   },
@@ -336,13 +371,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Number',
     valueType: 'uint256',
     // Test data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x0000000000000000000000000000000000000000000000000000000000000063',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0x0000000000000000000000000000000000000000000000000000000000000063'],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x0000000000000000000000000000000000000000000000000000000000000063',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0x0000000000000000000000000000000000000000000000000000000000000063']],
+    ),
     returnGraphData:
       '0x0000000000000000000000000000000000000000000000000000000000000063',
     expectedResult: 99,
@@ -356,13 +392,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Number',
     valueType: 'bytes',
     // Test data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x0000000000000000000000000000000000000000000000000000000000000063',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0x0000000000000000000000000000000000000000000000000000000000000063'],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x0000000000000000000000000000000000000000000000000000000000000063',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0x0000000000000000000000000000000000000000000000000000000000000063']],
+    ),
     returnGraphData:
       '0x0000000000000000000000000000000000000000000000000000000000000063',
     expectedResult: 99,
@@ -376,13 +413,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'String',
     valueType: 'bytes',
     // Test data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      utf8ToHex('Ok this is a string stored as bytes...'),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [utf8ToHex('Ok this is a string stored as bytes...')],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('Ok this is a string stored as bytes...'),
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('Ok this is a string stored as bytes...')]],
+    ),
     returnGraphData: utf8ToHex('Ok this is a string stored as bytes...'),
     expectedResult: 'Ok this is a string stored as bytes...',
   },
@@ -396,23 +434,30 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'String',
     valueType: 'string[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('bytes[]', [
-        utf8ToHex('apple sauce'),
-        utf8ToHex('butter chicken'),
-      ]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        abiCoder.encode(
+          ['bytes[]'],
+          [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+        ),
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('bytes[]', [
-        utf8ToHex('apple sauce'),
-        utf8ToHex('butter chicken'),
-      ]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('apple sauce'),
-      utf8ToHex('butter chicken'),
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          abiCoder.encode(
+            ['bytes[]'],
+            [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+          ),
+        ],
+      ],
+    ),
+    returnGraphData: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+    ),
     expectedResult: ['apple sauce', 'butter chicken'],
   },
 
@@ -424,23 +469,30 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'String',
     valueType: 'bytes[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('bytes[]', [
-        utf8ToHex('apple sauce'),
-        utf8ToHex('butter chicken'),
-      ]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        abiCoder.encode(
+          ['bytes[]'],
+          [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+        ),
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('bytes[]', [
-        utf8ToHex('apple sauce'),
-        utf8ToHex('butter chicken'),
-      ]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('bytes[]', [
-      utf8ToHex('apple sauce'),
-      utf8ToHex('butter chicken'),
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          abiCoder.encode(
+            ['bytes[]'],
+            [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+          ),
+        ],
+      ],
+    ),
+    returnGraphData: abiCoder.encode(
+      ['bytes[]'],
+      [[utf8ToHex('apple sauce'), utf8ToHex('butter chicken')]],
+    ),
     expectedResult: ['apple sauce', 'butter chicken'],
   },
 
@@ -452,23 +504,45 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Address',
     valueType: 'address[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('address[]', [
-        '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
-        '0xba61a0b24a228807f23b46064773d28fe51da81c',
-      ]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        abiCoder.encode(
+          ['address[]'],
+          [
+            [
+              '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
+              '0xba61a0b24a228807f23b46064773d28fe51da81c',
+            ],
+          ],
+        ),
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('address[]', [
-        '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
-        '0xba61a0b24a228807f23b46064773d28fe51da81c',
-      ]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('address[]', [
-      '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
-      '0xba61a0b24a228807f23b46064773d28fe51da81c',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          abiCoder.encode(
+            ['address[]'],
+            [
+              [
+                '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
+                '0xba61a0b24a228807f23b46064773d28fe51da81c',
+              ],
+            ],
+          ),
+        ],
+      ],
+    ),
+    returnGraphData: abiCoder.encode(
+      ['address[]'],
+      [
+        [
+          '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
+          '0xba61a0b24a228807f23b46064773d28fe51da81c',
+        ],
+      ],
+    ),
     expectedResult: [
       '0xCE3e75A43B0A29292219926EAdC8C5585651219C',
       '0xba61a0b24a228807f23B46064773D28Fe51dA81C',
@@ -483,14 +557,15 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Number',
     valueType: 'uint256[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('uint256[]', [123, 456]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [abiCoder.encode(['uint256[]'], [[123, 456]])],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('uint256[]', [123, 456]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('uint256[]', [123, 456]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [[abiCoder.encode(['uint256[]'], [[123, 456]])]],
+    ),
+    returnGraphData: abiCoder.encode(['uint256[]'], [[123, 456]]),
     expectedResult: [
       123, // (firefox metamask key)
       456, // {firefox metamask key}
@@ -505,23 +580,45 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Keccak256',
     valueType: 'bytes32[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('bytes32[]', [
-        '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
-        '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
-      ]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        abiCoder.encode(
+          ['bytes32[]'],
+          [
+            [
+              '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
+              '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
+            ],
+          ],
+        ),
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('bytes32[]', [
-        '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
-        '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
-      ]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('bytes32[]', [
-      '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
-      '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          abiCoder.encode(
+            ['bytes32[]'],
+            [
+              [
+                '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
+                '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
+              ],
+            ],
+          ),
+        ],
+      ],
+    ),
+    returnGraphData: abiCoder.encode(
+      ['bytes32[]'],
+      [
+        [
+          '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
+          '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
+        ],
+      ],
+    ),
     expectedResult: [
       '0xe5d35cae7c9db9879eb8a205baa046ad99503414d6a55eb6725494a4254a6d3f',
       '0x828e919feac2ec05939abd5d221692fbe6bac5667ba5af5d191df1f7ecb1ac21',
@@ -536,23 +633,45 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'URL',
     valueType: 'string[]',
     // Testing fields
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      abiCoder.encodeParameter('string[]', [
-        'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
-        'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
-      ]),
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        abiCoder.encode(
+          ['string[]'],
+          [
+            [
+              'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
+              'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
+            ],
+          ],
+        ),
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      abiCoder.encodeParameter('string[]', [
-        'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
-        'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
-      ]),
-    ]),
-    returnGraphData: abiCoder.encodeParameter('string[]', [
-      'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
-      'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          abiCoder.encode(
+            ['string[]'],
+            [
+              [
+                'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
+                'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
+              ],
+            ],
+          ),
+        ],
+      ],
+    ),
+    returnGraphData: abiCoder.encode(
+      ['string[]'],
+      [
+        [
+          'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
+          'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
+        ],
+      ],
+    ),
     expectedResult: [
       'ipfs://QmbErKh3Fjsxxxxxxxxxxxxxxxxxxxxxxxxxxv9AJJvZbd',
       'ipfs://QmbErKh3FjsAR6YjsTjHZNm6McDp6aRt82Ftcv9AJJvZbd',
@@ -568,13 +687,14 @@ export const mockSchema: (ERC725JSONSchema & {
       '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658', // keccak hash of 'test'
     valueType: 'bytes32',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658'],
     ), // this is bytes
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658']],
+    ),
     returnGraphData:
       '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658',
     expectedResult:
@@ -588,8 +708,8 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: '0x5ef83ad9',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter('bytes', '0x5ef83ad9'),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', ['0x5ef83ad9']),
+    returnRawData: abiCoder.encode(['bytes'], ['0x5ef83ad9']),
+    returnRawDataArray: abiCoder.encode(['bytes[]'], [['0x5ef83ad9']]),
     returnGraphData: '0x5ef83ad9',
     expectedResult: '0x5ef83ad9',
   },
@@ -600,8 +720,8 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: '0x5ef83ad9',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter('bytes', '0x5ef83ad9'),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', ['0x5ef83ad9']),
+    returnRawData: abiCoder.encode(['bytes'], ['0x5ef83ad9']),
+    returnRawDataArray: abiCoder.encode(['bytes[]'], [['0x5ef83ad9']]),
     returnGraphData: '0x5ef83ad9',
     expectedResult: '0x5ef83ad9',
   },
@@ -613,13 +733,20 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'AssetURL',
     valueType: 'bytes',
     // Testing data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      [
+        '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+      ],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [
+        [
+          '0x6f357c6aa7d9a84b44013f71356d72e6c15fdc2533c573271c53d053ed8ddcdaa60f4c81697066733a2f2f516d6245724b6833466a73415236596a73546a485a4e6d364d6344703661527438324674637639414a4a765a6264',
+        ],
+      ],
+    ),
     returnGraphData: '0x0c03fba782b07bcf810deb3b7f0595024a444f4e',
     expectedResult: {
       verification: {
@@ -636,8 +763,8 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Bytes4',
     valueType: 'bytes',
     // Test data
-    returnRawData: abiCoder.encodeParameter('bytes', '0xcafecafe'),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', ['0xcafecafe']),
+    returnRawData: abiCoder.encode(['bytes'], ['0xcafecafe']),
+    returnRawDataArray: abiCoder.encode(['bytes[]'], [['0xcafecafe']]),
     expectedResult: '0xcafecafe',
     returnGraphData: '0xcafecafe',
   },
@@ -648,13 +775,14 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Bytes32',
     valueType: 'bytes32',
     // Test data
-    returnRawData: abiCoder.encodeParameter(
-      'bytes',
-      '0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe',
+    returnRawData: abiCoder.encode(
+      ['bytes'],
+      ['0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe'],
     ),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', [
-      '0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe',
-    ]),
+    returnRawDataArray: abiCoder.encode(
+      ['bytes[]'],
+      [['0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe']],
+    ),
     expectedResult:
       '0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe',
     returnGraphData:
@@ -667,8 +795,8 @@ export const mockSchema: (ERC725JSONSchema & {
     valueContent: 'Bytes4',
     valueType: 'bytes4',
     // Test data
-    returnRawData: abiCoder.encodeParameter('bytes', '0xcafecafe'),
-    returnRawDataArray: abiCoder.encodeParameter('bytes[]', ['0xcafecafe']),
+    returnRawData: abiCoder.encode(['bytes'], ['0xcafecafe']),
+    returnRawDataArray: abiCoder.encode(['bytes[]'], [['0xcafecafe']]),
     expectedResult: '0xcafecafe',
     returnGraphData: '0xcafecafe',
   },
