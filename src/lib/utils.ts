@@ -582,3 +582,15 @@ export function patchIPFSUrlsIfApplicable(
 
   return receivedData;
 }
+
+/**
+ * Remove the leading 0x
+ * @param hexString
+ * @returns string
+ */
+export function stripHexPrefix(hexString) {
+  if (hexString.startsWith('0x')) {
+    return hexString.slice(2);
+  }
+  return hexString;
+}

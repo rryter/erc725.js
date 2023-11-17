@@ -17,8 +17,8 @@
  * @date 2022
  */
 
-import { isAddress, isHex, leftPad, numberToHex, padLeft } from 'web3-utils';
-import { keccak256, toUtf8Bytes } from 'ethers';
+import { isHex, padLeft } from 'web3-utils';
+import { isAddress, keccak256, toBeHex, toUtf8Bytes } from 'ethers';
 import { guessKeyTypeFromKeyName } from './utils';
 import { DynamicKeyParts } from '../types/dynamicKeys';
 import { ERC725JSONSchemaKey } from '../types/ERC725JSONSchema';
@@ -67,7 +67,7 @@ export const encodeDynamicKeyPart = (
           `Wrong value: ${value} for dynamic key with type: <bool>. Expected "true" or "false".`,
         );
       }
-      return leftPad(+(value === 'true'), bytes * 2).slice(2);
+      return toBeHex(+(value === 'true'), bytes).slice(2);
     }
     case 'address': {
       if (!isAddress(value)) {
@@ -77,7 +77,10 @@ export const encodeDynamicKeyPart = (
       }
 
       if (bytes > 20) {
-        return leftPad(value.replace('0x', ''), bytes * 2).toLowerCase();
+        return value
+          .replace('0x', '')
+          .toLowerCase()
+          .padStart(bytes * 2, '0');
       }
 
       return value
@@ -95,7 +98,7 @@ export const encodeDynamicKeyPart = (
       // NOTE: we could verify if the number given is not too big for the given size.
       // e.g.: uint8 max value is 255, uint16 is 65535...
 
-      const hexNumber = numberToHex(value).slice(2);
+      const hexNumber = toBeHex(value).slice(2);
       if (hexNumber.length <= bytes * 2) {
         return padLeft(hexNumber, bytes * 2);
       }
@@ -123,7 +126,7 @@ export const encodeDynamicKeyPart = (
         return valueWithoutPrefix.slice(0, bytes * 2); // right cut
       }
 
-      return leftPad(valueWithoutPrefix, bytes * 2).toLowerCase();
+      return valueWithoutPrefix.padStart(bytes * 2, '0').toLowerCase();
     }
     default:
       throw new Error(`Dynamic key: ${type} is not supported`);
@@ -258,7 +261,10 @@ function encodeDynamicKeyName(
  *
  * @return the name of the key encoded as per specifications.
  */
-export function encodeKeyName(name: string, dynamicKeyParts?: DynamicKeyParts): ERC725JSONSchemaKey {
+export function encodeKeyName(
+  name: string,
+  dynamicKeyParts?: DynamicKeyParts,
+): ERC725JSONSchemaKey {
   if (isDynamicKeyName(name)) {
     return encodeDynamicKeyName(name, dynamicKeyParts);
   }

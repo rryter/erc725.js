@@ -30,19 +30,22 @@ import AbiCoder from 'web3-eth-abi';
 import {
   hexToNumber,
   hexToUtf8,
-  isAddress,
   isHex,
-  numberToHex,
-  padLeft,
   toChecksumAddress,
   utf8ToHex,
-  stripHexPrefix,
   hexToBytes,
   bytesToHex,
   toHex,
-  toBN,
 } from 'web3-utils';
-import { toUtf8Bytes, keccak256, dataLength } from 'ethers';
+import {
+  isAddress,
+  toUtf8Bytes,
+  keccak256,
+  dataLength,
+  toBeHex,
+  toUtf8String,
+  hexlify,
+} from 'ethers';
 import { JSONURLDataToEncode, URLDataWithHash, Verification } from '../types';
 import { AssetURLEncode } from '../types/encodeData';
 
@@ -50,7 +53,7 @@ import {
   SUPPORTED_VERIFICATION_METHOD_STRINGS,
   UNKNOWN_VERIFICATION_METHOD,
 } from '../constants/constants';
-import { getVerificationMethod, hashData } from './utils';
+import { getVerificationMethod, hashData, stripHexPrefix } from './utils';
 
 const abiCoder = AbiCoder;
 
@@ -68,8 +71,8 @@ const encodeDataSourceWithHash = (
   return (
     (verificationMethod
       ? keccak256(toUtf8Bytes(verificationMethod.name)).slice(0, 10)
-      : padLeft(0, 8)) +
-    stripHexPrefix(verification ? verification.data : padLeft(0, 64)) +
+      : toBeHex(0, 4)) +
+    stripHexPrefix(verification ? verification.data : toBeHex(0, 32)) +
     stripHexPrefix(utf8ToHex(dataSource))
   );
 };
@@ -80,7 +83,7 @@ const decodeDataSourceWithHash = (value: string): URLDataWithHash => {
 
   const encodedData = value.replace('0x', '').slice(8); // Rest of data string after function hash
   const dataHash = '0x' + encodedData.slice(0, 64); // Get jsonHash 32 bytes
-  const dataSource = hexToUtf8('0x' + encodedData.slice(64)); // Get remainder as URI
+  const dataSource = toUtf8String('0x' + encodedData.slice(64)); // Get remainder as URI
 
   return {
     verification: {
@@ -99,10 +102,10 @@ const encodeToBytesN = (
 
   if (typeof value === 'string' && !isHex(value)) {
     // if we receive a plain string (e.g: "hey!"), convert it to utf8-hex data
-    valueToEncode = toHex(value);
+    valueToEncode = hexlify(toUtf8Bytes(value));
   } else if (typeof value === 'number') {
     // if we receive a number as input, convert it to hex
-    valueToEncode = numberToHex(value);
+    valueToEncode = toBeHex(value);
   } else {
     valueToEncode = value;
   }
@@ -152,7 +155,7 @@ const encodeCompactBytesArray = (values: string[]): string => {
     })
     .reduce((acc, value) => {
       const numberOfBytes = stripHexPrefix(value).length / 2;
-      const hexNumber = padLeft(numberToHex(numberOfBytes), 4);
+      const hexNumber = toBeHex(numberOfBytes, 2);
       return acc + stripHexPrefix(hexNumber) + stripHexPrefix(value);
     }, '0x');
 
@@ -273,7 +276,7 @@ const encodeUintNCompactBytesArray = (
   numberOfBytes: number,
 ): string => {
   const hexValues: string[] = values.map((value, index) => {
-    const hexNumber = stripHexPrefix(numberToHex(value)).padStart(
+    const hexNumber = stripHexPrefix(toBeHex(value)).padStart(
       numberOfBytes * 2,
       '0',
     );
@@ -350,7 +353,9 @@ const encodeStringCompactBytesArray = (values: string[]): string => {
  */
 const decodeStringCompactBytesArray = (compactBytesArray: string): string[] => {
   const hexValues: string[] = decodeCompactBytesArray(compactBytesArray);
-  const stringValues: string[] = hexValues.map((element) => hexToUtf8(element));
+  const stringValues: string[] = hexValues.map((element) =>
+    toUtf8String(element),
+  );
 
   return stringValues;
 };
@@ -374,7 +379,7 @@ const valueTypeEncodingMap = {
 
       return utf8ToHex(value);
     },
-    decode: (value: string) => hexToUtf8(value),
+    decode: (value: string) => toUtf8String(value),
   },
   address: {
     encode: (value: string) => {
@@ -409,7 +414,7 @@ const valueTypeEncodingMap = {
         );
       }
 
-      return toBN(value).toNumber();
+      return Number(BigInt(value));
     },
   },
   uint256: {
@@ -429,7 +434,7 @@ const valueTypeEncodingMap = {
         );
       }
 
-      return toBN(value).toNumber();
+      return Number(BigInt(value));
     },
   },
   bytes32: {
@@ -526,7 +531,7 @@ export const valueContentEncodingMap = (valueContent: string) => {
             throw new Error(error);
           }
 
-          return padLeft(numberToHex(parsedValue), 64);
+          return toBeHex(parsedValue, 32);
         },
         decode: (value) => Number(hexToNumber(value)),
       };

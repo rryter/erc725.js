@@ -20,18 +20,10 @@
 // Tests for the @erc725/erc725.js package
 import { assert } from 'chai';
 
-import Web3 from 'web3';
 import * as sinon from 'sinon';
-import { hexToNumber, leftPad, numberToHex } from 'web3-utils';
+import Web3 from 'web3';
 
 import ERC725 from '.';
-import {
-  decodeKeyValue,
-  encodeKey,
-  encodeKeyValue,
-  hashData,
-} from './lib/utils';
-import { ERC725JSONSchema } from './types/ERC725JSONSchema';
 import { EthereumProvider, HttpProvider } from '../test/mockProviders';
 import { mockSchema } from '../test/mockSchema';
 import {
@@ -39,15 +31,23 @@ import {
   generateAllRawData,
   generateAllResults,
 } from '../test/testHelpers';
+import {
+  decodeKeyValue,
+  encodeKey,
+  encodeKeyValue,
+  hashData,
+} from './lib/utils';
+import { ERC725JSONSchema } from './types/ERC725JSONSchema';
 
 import 'isomorphic-fetch';
 
+import { toBeHex } from 'ethers';
 import {
   ERC725Y_INTERFACE_IDS,
   SUPPORTED_VERIFICATION_METHOD_STRINGS,
 } from './constants/constants';
-import { decodeKey } from './lib/decodeData';
 import { INTERFACE_IDS_0_12_0 } from './constants/interfaces';
+import { decodeKey } from './lib/decodeData';
 
 const address = '0x0c03fba782b07bcf810deb3b7f0595024a444f4e';
 
@@ -773,9 +773,7 @@ describe('Running @erc725/erc725.js tests...', () => {
           for (let i = 0; i < schemaElement.expectedResult.length; i++) {
             if (i === 0) {
               // Push the array length into the first element of results array
-              results.push(
-                leftPad(numberToHex(schemaElement.expectedResult.length), 32),
-              );
+              results.push(toBeHex(schemaElement.expectedResult.length, 16));
             }
 
             results.push(
@@ -799,7 +797,7 @@ describe('Running @erc725/erc725.js tests...', () => {
 
             try {
               // Fail silently with anything BUT the arrayLength key
-              hexToNumber(element.value);
+              parseInt(element.value, 16);
             } catch (error) {
               const result = decodeKeyValue(
                 schemaElement.valueContent,
