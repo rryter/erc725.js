@@ -98,7 +98,6 @@ export function encodeKeyValue(
   const isValueTypeArray = valueType.slice(valueType.length - 2) === '[]';
 
   if (!isValueTypeArray && !Array.isArray(decodedValue)) {
-    // Straight forward encode
     return encodeValueContent(valueContent, decodedValue);
   }
 

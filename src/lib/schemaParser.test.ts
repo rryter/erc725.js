@@ -12,8 +12,10 @@
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import assert from 'assert';
-import { ERC725JSONSchema, ERC725JSONSchemaKey } from '../types/ERC725JSONSchema';
+import {
+  ERC725JSONSchema,
+  ERC725JSONSchemaKey,
+} from '../types/ERC725JSONSchema';
 
 import { getSchema } from './schemaParser';
 
@@ -24,7 +26,7 @@ describe('schemaParser getSchema', () => {
         '0x5ef83ad9559033e6e941db7d7c495acdce616347d28e90c7ce47cbfcfcad3bc5',
       );
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         name: 'LSP3Profile',
         key: '0x5ef83ad9559033e6e941db7d7c495acdce616347d28e90c7ce47cbfcfcad3bc5',
         keyType: 'Singleton',
@@ -40,7 +42,7 @@ describe('schemaParser getSchema', () => {
         '0x7c8c3416d6cda87cd42c71ea1843df28ac4850354f988d55ee2eaa47b6dc05cd',
       );
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         name: 'LSP12IssuedAssets[]',
         key: '0x7c8c3416d6cda87cd42c71ea1843df28ac4850354f988d55ee2eaa47b6dc05cd',
         keyType: 'Array',
@@ -54,7 +56,7 @@ describe('schemaParser getSchema', () => {
         '0xdf30dba06db6a30e65354d9a64c6098600000000000000000000000000000000',
       ]);
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         '0x7c8c3416d6cda87cd42c71ea1843df2800000000000000000000000000000001': {
           name: 'LSP12IssuedAssets[1]',
           key: '0x7c8c3416d6cda87cd42c71ea1843df2800000000000000000000000000000001',
@@ -76,7 +78,7 @@ describe('schemaParser getSchema', () => {
         '0x3a47ab5bd3a594c3a8995f8fa58d087600000000000fab000000000000000001',
       );
 
-      assert.deepStrictEqual(schema, null);
+      expect(schema).toEqual(null);
     });
   });
 
@@ -86,7 +88,7 @@ describe('schemaParser getSchema', () => {
         '0xeafec4d89fa9619884b600005ef83ad9559033e6e941db7d7c495acdce616347',
       );
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         name: 'SupportedStandards:LSP3Profile',
         key: '0xeafec4d89fa9619884b600005ef83ad9559033e6e941db7d7c495acdce616347',
         keyType: 'Mapping',
@@ -101,7 +103,7 @@ describe('schemaParser getSchema', () => {
         '0xeafec4d89fa9619884b60000f4d7faed14a1ab658d46d385bc29fb1eeaa56d0b',
       );
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         name: 'SupportedStandards:??????',
         key: '0xeafec4d89fa9619884b60000f4d7faed14a1ab658d46d385bc29fb1eeaa56d0b',
         keyType: 'Mapping',
@@ -124,7 +126,7 @@ describe('schemaParser getSchema', () => {
 
       const schema = getSchema(key, [extraSchema]);
 
-      assert.deepStrictEqual(schema, extraSchema);
+      expect(schema).toEqual(extraSchema);
     });
   });
 
@@ -135,7 +137,7 @@ describe('schemaParser getSchema', () => {
       const key = `0x4b80742de2bf82acb3630000${address}` as ERC725JSONSchemaKey;
       const schema = getSchema(key);
 
-      assert.deepStrictEqual(schema, {
+      expect(schema).toEqual({
         name,
         key,
         keyType: 'MappingWithGrouping',

@@ -22,7 +22,7 @@
   in accordance with implementation of smart contract interfaces of ERC725
 */
 
-import { AbiCoder } from 'ethers';
+import { AbiCoder, Transaction } from 'ethers';
 import { JsonRpc } from '../types/JsonRpc';
 import { Method } from '../types/Method';
 import { constructJSONRPC, decodeResult } from '../lib/provider-wrapper-utils';
@@ -134,7 +134,10 @@ export class ProviderWrapper {
 
     // These will be boolean because passing Method.SUPPORTS_INTERFACE ensures they will be decoded to bool by web3-eth-abi lib
     // The {[key: string]: any} return type causes problems for boolean values so we have to cast here
-    if (this.type === ProviderTypes.ETHEREUM) {
+    if (
+      this.type === ProviderTypes.ETHEREUM ||
+      this.type === ProviderTypes.ETHERS
+    ) {
       return decodeResult(
         Method.SUPPORTS_INTERFACE,
         result,
@@ -250,7 +253,10 @@ export class ProviderWrapper {
     keyHashes: string[],
     method: Method.GET_DATA | Method.GET_DATA_BATCH,
   ): Promise<GetDataReturn[]> {
-    if (this.type === ProviderTypes.ETHEREUM) {
+    if (
+      this.type === ProviderTypes.ETHEREUM ||
+      this.type === ProviderTypes.ETHERS
+    ) {
       const encodedResults = await this.callContract(
         constructJSONRPC(
           address,
@@ -344,10 +350,10 @@ export class ProviderWrapper {
       const { data, gas: gasLimit, to, value } = (payload as JsonRpc).params[0];
       const transaction = {
         to,
-        value, // Convert the value to a BigNumber
-        gasLimit,
+        value: BigInt(value), // Convert the value to a BigNumber
+        gasLimit: BigInt(gasLimit),
         data,
-      };
+      } as Transaction;
 
       return this.provider.call(transaction);
     }

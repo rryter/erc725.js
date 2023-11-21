@@ -12,8 +12,6 @@
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import assert from 'assert';
-
 import { ERC725JSONSchema } from '../types/ERC725JSONSchema';
 import { getSchemaElement } from './getSchemaElement';
 
@@ -29,12 +27,11 @@ describe('getSchemaElement', () => {
       },
     ];
 
-    assert.strictEqual(getSchemaElement(schemas, schemas[0].name), schemas[0]);
-    assert.strictEqual(getSchemaElement(schemas, schemas[0].key), schemas[0]);
-    // assert.strictEqual(
-    //   getSchemaElement(schemas, schemas[0].key.slice(2)),
-    //   schemas[0],
-    // );
+    expect(getSchemaElement(schemas, schemas[0].name)).toEqual(schemas[0]);
+    expect(getSchemaElement(schemas, schemas[0].key)).toEqual(schemas[0]);
+    expect(getSchemaElement(schemas, schemas[0].key.slice(2))).toEqual(
+      schemas[0],
+    );
   });
 
   const schemasWithDynamicKey: ERC725JSONSchema[] = [
@@ -55,25 +52,24 @@ describe('getSchemaElement', () => {
   ];
 
   it('throws is attempt to get a dynamic key without dynamicKeyParts', () => {
-    assert.throws(() =>
+    expect(() =>
       getSchemaElement(schemasWithDynamicKey, 'LSP12IssuedAssetsMap:<address>'),
-    );
+    ).toThrow();
   });
 
   it('gets the schemeElement for a dynamic key correctly', () => {
-    assert.deepStrictEqual(
+    expect(
       getSchemaElement(
         schemasWithDynamicKey,
         'LSP12IssuedAssetsMap:<address>',
         ['0x2ab3903c6e5815f4bc2a95b7f3b22b6a289bacac'],
       ),
-      {
-        name: 'LSP12IssuedAssetsMap:2ab3903c6e5815f4bc2a95b7f3b22b6a289bacac',
-        key: '0x74ac2555c10b9349e78f00002ab3903c6e5815f4bc2a95b7f3b22b6a289bacac',
-        keyType: 'Mapping',
-        valueType: 'bytes',
-        valueContent: 'Mixed',
-      },
-    );
+    ).toEqual({
+      name: 'LSP12IssuedAssetsMap:2ab3903c6e5815f4bc2a95b7f3b22b6a289bacac',
+      key: '0x74ac2555c10b9349e78f00002ab3903c6e5815f4bc2a95b7f3b22b6a289bacac',
+      keyType: 'Mapping',
+      valueType: 'bytes',
+      valueContent: 'Mixed',
+    });
   });
 });

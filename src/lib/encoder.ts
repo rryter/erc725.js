@@ -119,8 +119,6 @@ const encodeToBytesN = (
     );
   }
 
-  console.log(`${bytesN}`);
-
   // abi-encoding right pads to 32 bytes, if we need less, we need to remove the padding
   if (numberOfBytesInType === 32) {
     const abiEncodedValue = abiCoder.encode(
@@ -462,12 +460,7 @@ const valueTypeEncodingMap = {
     },
   },
   bytes: {
-    encode: (value: string) => {
-      // TODO: investigate, value and toHex(value) are the same
-      // console.log('value' + value);
-      // console.log(toHex(value));
-      return value;
-    },
+    encode: (value: string) => value,
     decode: (value: string) => value,
   },
   'bool[]': {

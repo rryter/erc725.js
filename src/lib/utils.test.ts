@@ -14,8 +14,6 @@
 
 /* eslint-disable no-unused-expressions */
 
-import assert from 'assert';
-
 import { hexlify, keccak256, toUtf8Bytes } from 'ethers';
 import {
   ERC725JSONSchema,
@@ -221,14 +219,12 @@ describe('utils', () => {
 
     testCases.forEach((testCase) => {
       it(`encodes/decodes keyType Array / tuples (valueContent: ${testCase.schema.valueContent}, valueType: ${testCase.schema.valueType}`, () => {
-        assert.deepStrictEqual(
+        expect(
           encodeKey(testCase.schema as ERC725JSONSchema, testCase.decodedValue),
-          testCase.encodedValue,
-        );
-        assert.deepStrictEqual(
+        ).toEqual(testCase.encodedValue);
+        expect(
           decodeKey(testCase.schema as ERC725JSONSchema, testCase.encodedValue),
-          testCase.decodedValue,
-        );
+        ).toEqual(testCase.decodedValue);
       });
     });
   });
@@ -344,14 +340,13 @@ describe('utils', () => {
 
     testCases.forEach((testCase) => {
       it(`encodes correctly valueContent ${testCase.valueContent} to valueType: ${testCase.valueType}`, () => {
-        assert.strictEqual(
+        expect(
           encodeKeyValue(
             testCase.valueContent,
             testCase.valueType as ERC725JSONSchemaValueType,
             testCase.decodedValue,
           ),
-          testCase.encodedValue,
-        );
+        ).toEqual(testCase.encodedValue);
       });
       it(`decodes correctly valueContent: ${testCase.valueContent} to valueType: ${testCase.valueType}`, () => {
         expect(
@@ -400,7 +395,7 @@ describe('utils', () => {
       ];
 
       expectedValues.forEach((expectedValue, index) => {
-        assert.strictEqual(encodeArrayKey(key, index), expectedValue);
+        expect(encodeArrayKey(key, index)).toEqual(expectedValue);
       });
     });
   });
@@ -448,7 +443,7 @@ describe('utils', () => {
         ],
         schemas,
       );
-      assert.deepStrictEqual(encodedDataByNamedKey, expectedResult);
+      expect(encodedDataByNamedKey).toEqual(expectedResult);
     });
 
     it('encodes data with named key - [non array input]', () => {
@@ -460,7 +455,7 @@ describe('utils', () => {
 
         schemas,
       );
-      assert.deepStrictEqual(encodedDataByNamedKey, expectedResult);
+      expect(encodedDataByNamedKey).toEqual(expectedResult);
     });
 
     it('encodes data with hashed key', () => {
@@ -476,7 +471,7 @@ describe('utils', () => {
         ],
         schemas,
       );
-      assert.deepStrictEqual(encodedDataByHashKey, expectedResult);
+      expect(encodedDataByHashKey).toEqual(expectedResult);
     });
 
     it('encodes data with hashed key without 0x prefix', () => {
@@ -493,10 +488,7 @@ describe('utils', () => {
         schemas,
       );
 
-      assert.deepStrictEqual(
-        encodedDataByHashKeyWithout0xPrefix,
-        expectedResult,
-      );
+      expect(encodedDataByHashKeyWithout0xPrefix).toEqual(expectedResult);
     });
 
     it('encodes array', () => {
@@ -510,7 +502,7 @@ describe('utils', () => {
         schemas,
       );
 
-      assert.deepStrictEqual(encodedDataWithMultipleKeys, {
+      expect(encodedDataWithMultipleKeys).toEqual({
         keys: [
           '0x3a47ab5bd3a594c3a8995f8fa58d0876c96819ca4516bd76100c92462f2f9dc0',
           '0x3a47ab5bd3a594c3a8995f8fa58d087600000000000000000000000000000000',
@@ -546,7 +538,7 @@ describe('utils', () => {
         schemas,
       );
 
-      assert.deepStrictEqual(encodedDataWithMultipleKeys, {
+      expect(encodedDataWithMultipleKeys).toEqual({
         keys: [
           '0x3a47ab5bd3a594c3a8995f8fa58d0876c96819ca4516bd76100c92462f2f9dc0',
           '0x3a47ab5bd3a594c3a8995f8fa58d087600000000000000000000000000000000',
@@ -593,7 +585,7 @@ describe('utils', () => {
         schemas,
       );
 
-      assert.deepStrictEqual(encodedMultipleKeys, {
+      expect(encodedMultipleKeys).toEqual({
         keys: [
           '0x5ef83ad9559033e6e941db7d7c495acdce616347d28e90c7ce47cbfcfcad3bc5',
           '0x3a47ab5bd3a594c3a8995f8fa58d0876c96819ca4516bd76100c92462f2f9dc0',
@@ -645,7 +637,7 @@ describe('utils', () => {
         ],
       );
 
-      assert.deepStrictEqual(encodedDynamicKeys, {
+      expect(encodedDynamicKeys).toEqual({
         keys: [
           `0x0fb367364e1852abc5f20000${address.replace('0x', '')}`,
           '0x0fb367364e181122334400007746e4c8ba6f946d9f51a1c9e539fb62598962aa',
@@ -668,7 +660,7 @@ describe('utils', () => {
         method: SUPPORTED_VERIFICATION_METHOD_STRINGS.KECCAK256_BYTES,
       });
 
-      assert.ok(isAuthentic);
+      expect(isAuthentic).toBeTruthy();
     });
     it('returns false if data is not authentic', () => {
       const data = toUtf8Bytes('h3ll0HowAreYou?');
@@ -679,7 +671,7 @@ describe('utils', () => {
         method: SUPPORTED_VERIFICATION_METHOD_STRINGS.KECCAK256_BYTES,
       });
 
-      assert.strictEqual(isAuthentic, false);
+      expect(isAuthentic).toBe(false);
     });
   });
 
@@ -719,8 +711,7 @@ describe('utils', () => {
 
     testCases.forEach((testCase) => {
       it(`guesses ${testCase.keyType}`, () => {
-        assert.deepStrictEqual(
-          guessKeyTypeFromKeyName(testCase.keyName),
+        expect(guessKeyTypeFromKeyName(testCase.keyName)).toEqual(
           testCase.keyType,
         );
       });
@@ -731,28 +722,24 @@ describe('utils', () => {
     const expectedIPFSGateway = 'https://cloudflare-ipfs.com/ipfs/';
 
     it('converts when missing /ipfs/', () => {
-      assert.deepStrictEqual(
-        convertIPFSGatewayUrl('https://cloudflare-ipfs.com'),
+      expect(convertIPFSGatewayUrl('https://cloudflare-ipfs.com')).toEqual(
         expectedIPFSGateway,
       );
     });
     it('converts when missing /', () => {
-      assert.deepStrictEqual(
-        convertIPFSGatewayUrl('https://cloudflare-ipfs.com/ipfs'),
+      expect(convertIPFSGatewayUrl('https://cloudflare-ipfs.com/ipfs')).toEqual(
         expectedIPFSGateway,
       );
     });
     it('converts when missing ipfs/', () => {
-      assert.deepStrictEqual(
-        convertIPFSGatewayUrl('https://cloudflare-ipfs.com/'),
+      expect(convertIPFSGatewayUrl('https://cloudflare-ipfs.com/')).toEqual(
         expectedIPFSGateway,
       );
     });
     it('does not convert when passed correctly', () => {
-      assert.deepStrictEqual(
+      expect(
         convertIPFSGatewayUrl('https://cloudflare-ipfs.com/ipfs/'),
-        expectedIPFSGateway,
-      );
+      ).toEqual(expectedIPFSGateway);
     });
   });
 
