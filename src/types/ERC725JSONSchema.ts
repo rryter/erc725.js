@@ -1,7 +1,4 @@
 // As Defined in: https://github.com/lukso-network/LIPs/blob/master/LSPs/LSP-2-ERC725YJSONSchema.md
-
-import { HexString } from 'ethers/lib.commonjs/utils/data';
-
 export type ERC725JSONSchemaKeyType =
   | 'Singleton'
   | 'Array'

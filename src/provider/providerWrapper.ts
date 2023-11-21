@@ -26,8 +26,13 @@ import { AbiCoder } from 'ethers';
 import { JsonRpc } from '../types/JsonRpc';
 import { Method } from '../types/Method';
 import { constructJSONRPC, decodeResult } from '../lib/provider-wrapper-utils';
-import { ProviderTypes } from '../types/provider';
+import { ERC725Provider, ProviderTypes } from '../types/provider';
 import { ERC725_VERSION, ERC725Y_INTERFACE_IDS } from '../constants/constants';
+import {
+  isEthereumProvider,
+  isEthersProvider,
+  isWeb3HttpProvider,
+} from '../lib/utils';
 
 const abiCoder = new AbiCoder();
 
@@ -38,14 +43,20 @@ interface GetDataReturn {
 
 export class ProviderWrapper {
   type: ProviderTypes;
-  provider: any;
+  provider: ERC725Provider;
   gas: number;
-  constructor(provider: any, gasInfo: number) {
-    if (typeof provider.request === 'function') {
+  constructor(provider: ERC725Provider, gasInfo: number) {
+    if (isEthersProvider(provider)) {
+      this.type = ProviderTypes.ETHERS;
+    } else if (isWeb3HttpProvider(provider)) {
+      this.type = ProviderTypes.WEB3;
+    } else if (isEthereumProvider(provider)) {
       this.type = ProviderTypes.ETHEREUM;
     } else {
-      this.type = ProviderTypes.WEB3;
+      // const exhaustiveCheck: never = provider;
+      throw new Error(`Unhandled provider type: ${typeof provider}`);
     }
+
     this.provider = provider;
     this.gas = gasInfo;
   }
@@ -322,24 +333,38 @@ export class ProviderWrapper {
   }
 
   private async callContract(payload: JsonRpc[] | JsonRpc): Promise<any> {
-    if (this.type === ProviderTypes.ETHEREUM) {
+    if (isEthereumProvider(this.provider)) {
       return this.provider.request({
         method: 'eth_call',
         params: (payload as JsonRpc).params,
       });
     }
 
+    if (isEthersProvider(this.provider)) {
+      const { data, gas: gasLimit, to, value } = (payload as JsonRpc).params[0];
+      const transaction = {
+        to,
+        value, // Convert the value to a BigNumber
+        gasLimit,
+        data,
+      };
+
+      return this.provider.call(transaction);
+    }
+
     return new Promise((resolve, reject) => {
       // Send old web3 method with callback to resolve promise
       // This is deprecated: https://docs.metamask.io/guide/ethereum-provider.html#ethereum-send-deprecated
 
-      this.provider.send(payload, (e, r) => {
-        if (e) {
-          reject(e);
-        } else {
-          resolve(r);
-        }
-      });
+      if (isWeb3HttpProvider(this.provider)) {
+        this.provider.send(payload, (e, r) => {
+          if (e) {
+            reject(e);
+          } else {
+            resolve(r);
+          }
+        });
+      }
     });
   }
 }

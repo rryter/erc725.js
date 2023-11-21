@@ -19,7 +19,14 @@
  * @date 2020
  */
 
-import { getAddress, hexlify, isAddress, toBeHex, toUtf8Bytes } from 'ethers';
+import {
+  getAddress,
+  hexlify,
+  isAddress,
+  toBeHex,
+  toUtf8Bytes,
+  AbstractProvider as EthersProvider,
+} from 'ethers';
 import { arrToBufArr } from 'ethereumjs-util';
 
 import {
@@ -53,6 +60,8 @@ import { getSchemaElement } from './getSchemaElement';
 import { EncodeDataInput } from '../types/decodeData';
 import { GetDataDynamicKey } from '../types/GetData';
 import { isValidTuple } from './decodeData';
+import HttpProvider from 'web3-providers-http';
+import { EthereumProvider } from '../types/provider';
 
 /**
  *
@@ -609,4 +618,18 @@ export function prepend0x(value: string) {
     return '0x' + value;
   }
   return value;
+}
+
+export function isEthersProvider(provider: any): provider is EthersProvider {
+  return typeof provider?.getSigner === 'function';
+}
+
+export function isWeb3HttpProvider(provider: any): provider is HttpProvider {
+  return typeof provider?.send === 'function';
+}
+
+export function isEthereumProvider(
+  provider: any,
+): provider is EthereumProvider {
+  return typeof provider?.request === 'function';
 }

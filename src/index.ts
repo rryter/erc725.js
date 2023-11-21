@@ -64,6 +64,9 @@ import { DynamicKeyPart, DynamicKeyParts } from './types/dynamicKeys';
 import { getData } from './lib/getData';
 import { supportsInterface, checkPermissions } from './lib/detector';
 import { decodeMappingKey } from './lib/decodeMappingKey';
+import { ERC725Provider } from './types/provider';
+
+type GasInfo = any;
 
 export {
   ERC725JSONSchema,
@@ -115,12 +118,12 @@ export class ERC725 {
       address,
       provider: ERC725.initializeProvider(
         provider,
-        config?.gas ? config?.gas : defaultConfig.gas,
+        config?.gas ?? defaultConfig.gas,
       ),
       ipfsGateway: config?.ipfsGateway
         ? convertIPFSGatewayUrl(config?.ipfsGateway)
         : defaultConfig.ipfsGateway,
-      gas: config?.gas ? config?.gas : defaultConfig.gas,
+      gas: config?.gas ?? defaultConfig.gas,
     };
   }
 
@@ -157,8 +160,18 @@ export class ERC725 {
       }
     });
   }
-
-  private static initializeProvider(providerOrRpcUrl, gasInfo) {
+  private static initializeProvider(
+    rpcUrl: string,
+    gasInfo?: GasInfo,
+  ): ProviderWrapper;
+  private static initializeProvider(
+    provider: ERC725Provider,
+    gasInfo?: GasInfo,
+  ): ProviderWrapper;
+  private static initializeProvider(
+    providerOrRpcUrl: any,
+    gasInfo?: GasInfo,
+  ): ProviderWrapper | undefined {
     // do not fail on no-provider
     if (!providerOrRpcUrl) return undefined;
 
